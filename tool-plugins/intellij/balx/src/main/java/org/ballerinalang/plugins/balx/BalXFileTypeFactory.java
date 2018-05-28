@@ -12,9 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-rootProject.name = 'ballerina-intellij-idea-plugin'
-include 'balx'
+package org.ballerinalang.plugins.balx;
 
+import com.intellij.openapi.fileTypes.FileTypeConsumer;
+import com.intellij.openapi.fileTypes.FileTypeFactory;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * File type factory.
+ */
+public class BalXFileTypeFactory extends FileTypeFactory {
+
+    @Override
+    public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer) {
+        fileTypeConsumer.consume(BalXFileType.INSTANCE);
+    }
+}

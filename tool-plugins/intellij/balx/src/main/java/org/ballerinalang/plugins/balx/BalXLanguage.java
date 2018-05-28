@@ -12,9 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-rootProject.name = 'ballerina-intellij-idea-plugin'
-include 'balx'
+package org.ballerinalang.plugins.balx;
 
+import com.intellij.lang.Language;
+
+/**
+ * Represents Ballerina language.
+ */
+public class BalXLanguage extends Language {
+
+    public static final BalXLanguage INSTANCE = new BalXLanguage();
+
+    private BalXLanguage() {
+        super("BalX");
+    }
+}

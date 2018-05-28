@@ -61,6 +61,10 @@ intellij {
     // alternativeIdePath localIdePath
 }
 
+dependencies {
+    compile project(':balx')
+}
+
 apply plugin: 'de.undercouch.download'
 task downloadPsiViewerPlugin() {
     download {

@@ -1,4 +1,6 @@
-<idea-plugin>
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="balx.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <id>org.ballerinalang</id>
     <name>Ballerina</name>
     <version>0.970.2-SNAPSHOT</version>
