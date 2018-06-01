@@ -8,7 +8,7 @@ function test() {
 
     match arrayIterator {
         ArrayIterator ai => {
-            {(int, any) value;}? nextEntry = ai.Next();
+            {(int, any) value;}? nextEntry = ai.next();
             while (true){
                 match nextEntry {
                     () => {
@@ -16,7 +16,7 @@ function test() {
                     }
                     {(int, any) value;} entry => {
                         io:println(entry);
-                        nextEntry = ai.Next();
+                        nextEntry = ai.next();
                     }
                 }
             }

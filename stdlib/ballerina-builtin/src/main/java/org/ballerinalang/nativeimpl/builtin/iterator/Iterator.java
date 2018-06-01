@@ -33,15 +33,12 @@ public class Iterator extends BlockingNativeCallableUnit {
 
     @Override
     public void execute(Context context) {
-
         BValue argument = context.getRefArgument(0);
-        if (argument instanceof BStringArray) {
-            PackageInfo packageInfo = context.getProgramFile().getPackageInfo("ballerina.builtin");
-            StructInfo structInfo = packageInfo.getStructInfo("ArrayIterator");
-            BStruct struct = BLangVMStructs.createBStruct(structInfo);
-            struct.addNativeData(DATA, argument);
-            struct.addNativeData(CURRENT_INDEX, 0);
-            context.setReturnValues(struct);
-        }
+        PackageInfo packageInfo = context.getProgramFile().getPackageInfo("ballerina.builtin");
+        StructInfo structInfo = packageInfo.getStructInfo("ArrayIterator");
+        BStruct struct = BLangVMStructs.createBStruct(structInfo);
+        struct.addNativeData(DATA, argument);
+        struct.addNativeData(CURRENT_INDEX, 0);
+        context.setReturnValues(struct);
     }
 }

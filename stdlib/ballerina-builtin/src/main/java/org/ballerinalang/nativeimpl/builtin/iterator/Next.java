@@ -48,7 +48,7 @@ import java.util.List;
  */
 @BallerinaFunction(
         orgName = "ballerina", packageName = "builtin",
-        functionName = "Next",
+        functionName = "next",
         receiver = @Receiver(type = TypeKind.STRUCT, structType = "ArrayIterator",
                 structPackage = "ballerina.builtin"),
         returnType = {@ReturnType(type = TypeKind.TUPLE)},
@@ -58,52 +58,36 @@ public class Next extends BlockingNativeCallableUnit {
 
     @Override
     public void execute(Context context) {
-        //        try {
+        // Get the struct.
         BStruct argument = ((BStruct) context.getRefArgument(0));
-
+        // Get data from the struct.
         Object data = argument.getNativeData(Iterator.DATA);
+        // Get the index from the struct.
         Object currentIndex = argument.getNativeData(Iterator.CURRENT_INDEX);
-
+        // If the required data and the index is found, we process the values.
         if (data != null && currentIndex != null) {
-            BStringArray array = (BStringArray) data;
+            BNewArray array = (BNewArray) data;
             int index = (int) currentIndex;
-            if (array.size() == index) {
-                // Todo
-            } else {
-                String item = array.get(index);
+            if (array.size() != index) {
+                BValue item = array.getBValue(index);
                 argument.addNativeData(Iterator.CURRENT_INDEX, index + 1);
-
+                // Todo - validate
                 StructInfo structInfo = ((BStructType) ((BUnionType) context.getCallableUnitInfo().getRetParamTypes()
                         [0]).getMemberTypes().get
                         (0)).structInfo;
                 BStruct struct = BLangVMStructs.createBStruct(structInfo);
 
-                BNewArray returnValue = new BRefValueArray();
-                ((BRefValueArray) returnValue).add(0, new BInteger(index));
-                ((BRefValueArray) returnValue).add(1, new BString(item));
+                BRefValueArray returnValue = new BRefValueArray();
+                returnValue.add(0, new BInteger(index));
+                returnValue.add(1, getValue(item));
                 struct.setRefField(0, returnValue);
 
                 context.setReturnValues(returnValue);
-
-
-                //                context.setReturnValues(new BString(item));
             }
         }
+    }
 
-        //            HTTPCarbonMessage httpCarbonMessage = (HTTPCarbonMessage) requestStruct
-        //                    .getNativeData(HttpConstants.TRANSPORT_MESSAGE);
-        //            BMapType mapType = new BMapType(BTypes.typeString);
-        //            if (httpCarbonMessage.getProperty(HttpConstants.QUERY_STR) != null) {
-        //                String queryString = (String) httpCarbonMessage.getProperty(HttpConstants.QUERY_STR);
-        //                BMap<String, BString> params = new BMap<>(mapType);
-        //                URIUtil.populateQueryParamMap(queryString, params);
-        //                context.setReturnValues(params);
-        //            } else {
-        //                context.setReturnValues();
-        //            }
-        //        } catch (Throwable e) {
-        //            throw new BallerinaException("Error while retrieving query param from message: " + e.getMessage
-        // ());
-        //        }
+    public static BRefType getValue(BValue value) {
+        return (BRefType) value;
     }
 }
