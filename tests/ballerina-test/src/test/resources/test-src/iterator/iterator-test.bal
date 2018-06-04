@@ -4,7 +4,7 @@ function test() {
 
     string[] data = ["A", "B", "C"];
 
-    ArrayIterator|error arrayIterator = <ArrayIterator>iterator(data);
+    var arrayIterator = <ArrayIterator>iterator(data);
 
     match arrayIterator {
         ArrayIterator ai => {
