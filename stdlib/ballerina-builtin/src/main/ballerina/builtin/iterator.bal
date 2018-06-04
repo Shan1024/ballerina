@@ -2,6 +2,13 @@ public native function iterator(any a) returns any;
 
 public type ArrayIterator object {
 
-    public native function next() returns {(int, any) value;}?;
+    private {
+        any data;
+    }
 
+    public new(data) {
+
+    }
+
+    public native function next() returns {(int, any) value;}?;
 };

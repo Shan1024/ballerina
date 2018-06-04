@@ -22,25 +22,21 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.BLangVMStructs;
 import org.ballerinalang.bre.bvm.BlockingNativeCallableUnit;
 import org.ballerinalang.model.types.BStructType;
-import org.ballerinalang.model.types.BTupleType;
 import org.ballerinalang.model.types.BType;
 import org.ballerinalang.model.types.BUnionType;
 import org.ballerinalang.model.types.TypeKind;
-import org.ballerinalang.model.values.BArray;
 import org.ballerinalang.model.values.BInteger;
 import org.ballerinalang.model.values.BNewArray;
 import org.ballerinalang.model.values.BRefType;
 import org.ballerinalang.model.values.BRefValueArray;
-import org.ballerinalang.model.values.BString;
-import org.ballerinalang.model.values.BStringArray;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
+import org.ballerinalang.util.codegen.CallableUnitInfo;
 import org.ballerinalang.util.codegen.StructInfo;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -62,29 +58,51 @@ public class Next extends BlockingNativeCallableUnit {
         BStruct argument = ((BStruct) context.getRefArgument(0));
         // Get data from the struct.
         Object data = argument.getNativeData(Iterator.DATA);
-        // Get the index from the struct.
+        // Get the index from the native data in the struct.
         Object currentIndex = argument.getNativeData(Iterator.CURRENT_INDEX);
         // If the required data and the index is found, we process the values.
-        if (data != null && currentIndex != null) {
-            BNewArray array = (BNewArray) data;
-            int index = (int) currentIndex;
-            if (array.size() != index) {
-                BValue item = array.getBValue(index);
-                argument.addNativeData(Iterator.CURRENT_INDEX, index + 1);
-                // Todo - validate
-                StructInfo structInfo = ((BStructType) ((BUnionType) context.getCallableUnitInfo().getRetParamTypes()
-                        [0]).getMemberTypes().get
-                        (0)).structInfo;
-                BStruct struct = BLangVMStructs.createBStruct(structInfo);
-
-                BRefValueArray returnValue = new BRefValueArray();
-                returnValue.add(0, new BInteger(index));
-                returnValue.add(1, getValue(item));
-                struct.setRefField(0, returnValue);
-
-                context.setReturnValues(returnValue);
-            }
+        if (data == null || currentIndex == null) {
+            return;
         }
+        // Todo - Validate in semantic analyzer.
+        // If the data is not a type of array, we don't do anything.
+        if (!(data instanceof BNewArray)) {
+            return;
+        }
+        // Cast the data to an BNewArray.
+        BNewArray array = (BNewArray) data;
+        // Cast the index to integer type.
+        int index = (int) currentIndex;
+        // Check whether we have reached the end of the array.
+        if (array.size() == index) {
+            return;
+        }
+        // Get the value in the index.
+        BValue item = array.getBValue(index);
+        // Update the index pointer in native data.
+        argument.addNativeData(Iterator.CURRENT_INDEX, index + 1);
+        // Get the callable unit info from the context. This is needed to get the return type.
+        CallableUnitInfo callableUnitInfo = context.getCallableUnitInfo();
+        // Get the 1st return type. This will be a union type.
+        BType unionType = callableUnitInfo.getRetParamTypes()[0];
+        // Get the member types of the union types.
+        List<BType> memberTypes = ((BUnionType) unionType).getMemberTypes();
+        // Get the first value from the union type. This will be an anonymous struct.
+        BType structType = memberTypes.get(0);
+        // Get the struct info type.
+        StructInfo structInfo = ((BStructType) structType).structInfo;
+        // Create new struct.
+        BStruct struct = BLangVMStructs.createBStruct(structInfo);
+        // We need to set fields of the struct.
+        BRefValueArray returnValue = new BRefValueArray();
+        // The first field should be the index.
+        returnValue.add(0, new BInteger(index));
+        // The second field should be the value.
+        returnValue.add(1, getValue(item));
+        // Add the fields to the struct.
+        struct.setRefField(0, returnValue);
+        // Set the return value.
+        context.setReturnValues(returnValue);
     }
 
     public static BRefType getValue(BValue value) {
