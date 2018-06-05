@@ -21,7 +21,8 @@ package org.ballerinalang.nativeimpl.builtin.iterator;
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.BLangVMStructs;
 import org.ballerinalang.bre.bvm.BlockingNativeCallableUnit;
-import org.ballerinalang.model.types.BStructType;
+import org.ballerinalang.model.types.BObjectType;
+import org.ballerinalang.model.types.BRecordType;
 import org.ballerinalang.model.types.BType;
 import org.ballerinalang.model.types.BUnionType;
 import org.ballerinalang.model.types.TypeKind;
@@ -35,7 +36,8 @@ import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.Receiver;
 import org.ballerinalang.natives.annotations.ReturnType;
 import org.ballerinalang.util.codegen.CallableUnitInfo;
-import org.ballerinalang.util.codegen.StructInfo;
+import org.ballerinalang.util.codegen.ObjectTypeInfo;
+import org.ballerinalang.util.codegen.RecordTypeInfo;
 
 import java.util.List;
 
@@ -45,7 +47,7 @@ import java.util.List;
 @BallerinaFunction(
         orgName = "ballerina", packageName = "builtin",
         functionName = "next",
-        receiver = @Receiver(type = TypeKind.STRUCT, structType = "ArrayIterator",
+        receiver = @Receiver(type = TypeKind.OBJECT, structType = "ArrayIterator",
                 structPackage = "ballerina.builtin"),
         returnType = {@ReturnType(type = TypeKind.TUPLE)},
         isPublic = true
@@ -87,20 +89,23 @@ public class Next extends BlockingNativeCallableUnit {
         BType unionType = callableUnitInfo.getRetParamTypes()[0];
         // Get the member types of the union types.
         List<BType> memberTypes = ((BUnionType) unionType).getMemberTypes();
-        // Get the first value from the union type. This will be an anonymous struct.
-        BType structType = memberTypes.get(0);
-        // Get the struct info type.
-        StructInfo structInfo = ((BStructType) structType).structInfo;
-        // Create new struct.
-        BStruct struct = BLangVMStructs.createBStruct(structInfo);
-        // We need to set fields of the struct.
+        // Get the first value from the union type. This will be an anonymous object.
+        BType objectType = memberTypes.get(0);
+        if (!(objectType instanceof BRecordType)) {
+            return;
+        }
+        // Get the record info type.
+        RecordTypeInfo recordTypeInfo = ((BRecordType) objectType).recordTypeInfo;
+        // Create new record.
+        BStruct record = BLangVMStructs.createBStruct(recordTypeInfo);
+        // We need to set fields of the record.
         BRefValueArray returnValue = new BRefValueArray();
         // The first field should be the index.
         returnValue.add(0, new BInteger(index));
         // The second field should be the value.
         returnValue.add(1, getValue(item));
-        // Add the fields to the struct.
-        struct.setRefField(0, returnValue);
+        // Add the fields to the record.
+        record.setRefField(0, returnValue);
         // Set the return value.
         context.setReturnValues(returnValue);
     }

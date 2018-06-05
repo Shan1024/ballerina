@@ -22,6 +22,7 @@ import org.ballerinalang.bre.Context;
 import org.ballerinalang.bre.bvm.BLangVMStructs;
 import org.ballerinalang.bre.bvm.BlockingNativeCallableUnit;
 import org.ballerinalang.model.types.TypeKind;
+import org.ballerinalang.model.values.BNewArray;
 import org.ballerinalang.model.values.BRefType;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
@@ -29,7 +30,7 @@ import org.ballerinalang.natives.annotations.Argument;
 import org.ballerinalang.natives.annotations.BallerinaFunction;
 import org.ballerinalang.natives.annotations.ReturnType;
 import org.ballerinalang.util.codegen.PackageInfo;
-import org.ballerinalang.util.codegen.StructInfo;
+import org.ballerinalang.util.codegen.StructureTypeInfo;
 
 /**
  * Native function ballerina.model.string:base64Decode.
@@ -52,13 +53,13 @@ public class Iterator extends BlockingNativeCallableUnit {
     public void execute(Context context) {
         BValue argument = context.getRefArgument(0);
         PackageInfo packageInfo = context.getProgramFile().getPackageInfo("ballerina.builtin");
-        StructInfo structInfo = packageInfo.getStructInfo("ArrayIterator");
+        StructureTypeInfo structInfo = packageInfo.getStructInfo("ArrayIterator");
         BStruct struct = BLangVMStructs.createBStruct(structInfo);
         if (argument instanceof BStruct) {
             // Handle objects.
             BRefType refField = ((BStruct) context.getRefArgument(0)).getRefField(0);
             struct.addNativeData(DATA, refField);
-        } else {
+        } else if (argument instanceof BNewArray) {
             // Handle arrays.
             struct.addNativeData(DATA, argument);
         }
