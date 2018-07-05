@@ -1677,7 +1677,11 @@
             </properties>
         </profile>
         <profile>
-            <id>ballerina</id>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
             <modules>
                 <module>compiler/ballerina-lang</module>
 
@@ -1750,9 +1754,9 @@
             </modules>
         </profile>
         <profile>
-            <id>default</id>
+            <id>ballerina</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
                 <module>compiler/ballerina-lang</module>

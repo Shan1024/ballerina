@@ -42,16 +42,19 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
  * Test class for gRPC unary service with blocking and non-blocking client.
- *
  */
 public class UnaryBlockingBasicTestCase extends IntegrationTestCase {
 
+    Logger logger = Logger.getLogger("UnaryBlockingBasicTestCase");
+
     private ServerInstance ballerinaServer;
-    
+
     @BeforeClass
     private void setup() throws Exception {
         ballerinaServer = ServerInstance.initBallerinaServer(9090);
@@ -162,12 +165,13 @@ public class UnaryBlockingBasicTestCase extends IntegrationTestCase {
         Assert.assertEquals(responses.length, 1);
         Assert.assertTrue(responses[0] instanceof BStringArray);
         BStringArray responseValues = (BStringArray) responses[0];
+        logger.log(Level.INFO, "responseValues[0]: " + responseValues.get(0));
         Assert.assertEquals(responseValues.size(), 2);
         Assert.assertTrue(Stream.of(responseValues.getStringArray()).anyMatch(serverMsg::equals));
         Assert.assertTrue(Stream.of(responseValues.getStringArray()).anyMatch(("Server Complete Sending Response" +
                 ".")::equals));
     }
-    
+
     @AfterClass
     private void cleanup() throws BallerinaTestException {
         ballerinaServer.stopServer();
