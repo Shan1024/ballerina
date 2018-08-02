@@ -70,3 +70,24 @@ type TableConfig record {
     any[] data;
     !...
 };
+
+public type TableIterator object {
+
+    private table data;
+
+    new(data) {
+    }
+
+    public function next() returns record { any value; !... }? {
+        if (!data.hasNext()) {
+            return ();
+        }
+        any row = data.getNext();
+        return { value: row };
+    }
+};
+
+public function table::iterate() returns TableIterator {
+    TableIterator iterator = new(self);
+    return iterator;
+}

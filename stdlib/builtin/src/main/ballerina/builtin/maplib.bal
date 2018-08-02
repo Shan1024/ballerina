@@ -37,3 +37,30 @@ public extern function map::clear();
 #
 # + return - An any array of values contained in the specified map
 public extern function map::values() returns (any[]);
+
+public type MapIterator object {
+
+    private map data;
+    private int index;
+
+    new(data) {
+        index = 0;
+    }
+
+    public function next() returns record { string key; any value; !... }? {
+        int length = lengthof data;
+        if (index == length) {
+            return ();
+        }
+        string[] keys = data.keys();
+        string key = keys[index];
+        any value = data[key];
+        index++;
+        return { key: key, value: value };
+    }
+};
+
+public function map::iterate() returns MapIterator {
+    MapIterator iterator = new(self);
+    return iterator;
+}

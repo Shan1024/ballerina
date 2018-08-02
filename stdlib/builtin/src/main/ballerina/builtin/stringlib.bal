@@ -152,3 +152,28 @@ public extern function string::base64ToBase16Encode() returns string;
 # + encoding - Encoding to be used in the conversion
 # + return - The byte array representation of the given String
 public extern function string::toByteArray(string encoding) returns byte[];
+
+public type StringIterator object {
+
+    private string data;
+    private int index;
+
+    new(data) {
+        index = 0;
+    }
+
+    public function next() returns record { string value; !... }? {
+        int length = data.length();
+        if (index == length) {
+            return ();
+        }
+        string char = data.substring(index, index + 1);
+        index++;
+        return { value: char };
+    }
+};
+
+public function string::iterate() returns StringIterator {
+    StringIterator iterator = new(self);
+    return iterator;
+}

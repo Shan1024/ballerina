@@ -112,3 +112,28 @@ public extern function xml::appendChildren(xml children);
 #
 # + qname - Namespace qualified name of the children to be removed
 public extern function xml::removeChildren(string qname);
+
+public type XmlIterator object {
+
+    private xml data;
+    private int index;
+
+    new(data) {
+        index = 0;
+    }
+
+    public function next() returns record { xml value; !... }? {
+        int length = lengthof data;
+        if (index == length) {
+            return ();
+        }
+        xml slice = data.slice(index, index + 1);
+        index++;
+        return { value: slice };
+    }
+};
+
+public function xml::iterate() returns XmlIterator {
+    XmlIterator iterator = new(self);
+    return iterator;
+}
