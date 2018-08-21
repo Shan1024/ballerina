@@ -855,15 +855,22 @@ public class Desugar extends BLangNodeVisitor {
             //            BLangSimpleVarRef variableRef = ASTBuilderUtil.createVariableRef(foreach.pos,
             //                    (BVarSymbol) ((BLangRef) foreach.collection).symbol);
             //
-            BLangAttachedFunctionInvocation attachedFunctionInvocation =
-                    new BLangAttachedFunctionInvocation(foreach.pos, new LinkedList<>(), new LinkedList<>(),
-                            new LinkedList<>(), iterateFunctionSymbol, iterateFunctionSymbol.type.getReturnType(),
-                            foreach.collection, false);
-            attachedFunctionInvocation.desugared = true;
+            //            BLangAttachedFunctionInvocation attachedFunctionInvocation =
+            //                    new BLangAttachedFunctionInvocation(foreach.pos, new LinkedList<>(), new
+            // LinkedList<>(),
+            //                            new LinkedList<>(), iterateFunctionSymbol, iterateFunctionSymbol.type
+            // .getReturnType(),
+            //                            foreach.collection, false);
+            //            attachedFunctionInvocation.desugared = true;
+
+            BLangInvocation invocationExpr = ASTBuilderUtil.createInvocationExpr(foreach.pos, iterateFunctionSymbol,
+                    new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), symResolver);
+            invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, "iterate");
+            invocationExpr.expr = (BLangVariableReference) foreach.collection;
 
             BVarSymbol varSymbol = new BVarSymbol(0,
                     names.fromString("_$$_iterator"),
-                    this.env.scope.owner.pkgID, attachedFunctionInvocation.type, this.env.scope.owner);
+                    this.env.scope.owner.pkgID, invocationExpr.type, this.env.scope.owner);
             //            BLangVariable iterator1 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_iterator",
             //                    attachedFunctionInvocation.type, null,
             //                    varSymbol);
@@ -881,7 +888,7 @@ public class Desugar extends BLangNodeVisitor {
 
             // Create a new assignment node.
             BLangAssignment assignmentNode = ASTBuilderUtil.createAssignmentStmt(foreach.pos, variableRef,
-                    attachedFunctionInvocation, true);
+                    invocationExpr, true);
             assignmentNode.parent = codeBlock;
 
             codeBlock.addStatement(assignmentNode);
@@ -916,14 +923,14 @@ public class Desugar extends BLangNodeVisitor {
             BLangAttachedFunctionInvocation nextFunctionInvocation = new BLangAttachedFunctionInvocation(foreach.pos,
                     new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), nextFunction.symbol,
                     nextFunction.type.retType, variableRef, false);
-            nextFunctionInvocation.desugared = true;
+//            nextFunctionInvocation.desugared = true;
 
             BLangInvocation invocationNode = ASTBuilderUtil.createInvocationExprForMethod(codeBlock.pos,
                     nextFunction.symbol, new ArrayList<>(), symResolver);
             invocationNode.name = ASTBuilderUtil.createIdentifier(foreach.pos, "next");
             invocationNode.expr = variableRef;
 
-            invocationNode.desugared = true;
+//            invocationNode.desugared = true;
 
             //            BVarSymbol nextSymbol = new BVarSymbol(0, names.fromString("_$$_next"),
             //                    this.env.scope.owner.pkgID, nextFunctionInvocation.type, this.env.scope.owner);
@@ -946,14 +953,15 @@ public class Desugar extends BLangNodeVisitor {
             patternClause.pos = foreach.pos;
 
             // todo - current return value
-//            BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
+            //            BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst
+            // ().get();
             BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
 
             BVarSymbol patternSymbol = new BVarSymbol(0, names.fromString("_$$_record"),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
 
-           BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_record", returnType, null,
-                   patternSymbol);
+            BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_record", returnType, null,
+                    patternSymbol);
 
             patternClause.variable = valueVariable2;
             patternClause.body = foreach.body;
@@ -993,8 +1001,6 @@ public class Desugar extends BLangNodeVisitor {
 
 
             patternClauses.add(patternClause);
-
-
 
 
             // Todo - () => {}
