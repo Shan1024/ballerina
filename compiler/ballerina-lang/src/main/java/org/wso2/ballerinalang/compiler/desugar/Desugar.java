@@ -945,19 +945,23 @@ public class Desugar extends BLangNodeVisitor {
                     (BLangMatchStmtPatternClause) TreeBuilder.createMatchStatementPattern();
             patternClause.pos = foreach.pos;
 
+            // todo - current return value
+//            BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
             BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
 
             BVarSymbol patternSymbol = new BVarSymbol(0, names.fromString("_$$_record"),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
 
-            valueVariable = ASTBuilderUtil.createVariable(foreach.pos, "_$$_record", returnType, null, patternSymbol);
+           BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_record", returnType, null,
+                   patternSymbol);
 
-            patternClause.variable = valueVariable;
+            patternClause.variable = valueVariable2;
             patternClause.body = foreach.body;
 
             // Todo - Create variable assignment statements
 
             BLangSimpleVarRef patternVariableVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, patternSymbol);
+
 
             BLangSimpleVarRef newKeyVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
             BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "key");
@@ -972,18 +976,18 @@ public class Desugar extends BLangNodeVisitor {
                     false);
             patternClause.body.getStatements().add(0, keyAssignmentStmt);
 
-            BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
+
+            BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
             BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "value");
             rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
 
             BVarSymbol valueSymbol = new BVarSymbol(0, names.fromString("value"),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
             rhs.symbol = valueSymbol;
-            rhs.type = ((BRecordType) valueSymbol.type).fields.get(0).type;
+            rhs.type = ((BRecordType) valueSymbol.type).fields.get(1).type;
 
             BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
                     rhs, false);
-
 
             patternClause.body.getStatements().add(1, valueAssignmentStmt);
 
@@ -991,17 +995,19 @@ public class Desugar extends BLangNodeVisitor {
             patternClauses.add(patternClause);
 
 
+
+
             // Todo - () => {}
             // Create nil pattern.
             patternClause = (BLangMatchStmtPatternClause) TreeBuilder.createMatchStatementPattern();
             patternClause.pos = foreach.pos;
-            valueVariable = (BLangVariable) TreeBuilder.createVariableNode();
+            BLangVariable valueVariable3 = (BLangVariable) TreeBuilder.createVariableNode();
             BLangIdentifier identifier = (BLangIdentifier) TreeBuilder.createIdentifierNode();
             identifier.pos = foreach.pos;
             identifier.setValue(Names.IGNORE.value);
-            valueVariable.setName(identifier);
-            valueVariable.type = symTable.nilType;
-            patternClause.variable = valueVariable;
+            valueVariable3.setName(identifier);
+            valueVariable3.type = symTable.nilType;
+            patternClause.variable = valueVariable3;
 
             BLangBreak breakNode = (BLangBreak) TreeBuilder.createBreakNode();
             breakNode.pos = foreach.pos;
