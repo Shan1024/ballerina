@@ -3,18 +3,22 @@ import ballerina/io;
 function testStringIterator() {
 
     string name = "Ballerina";
-    StringIterator iterator = name.iterate();
 
-    while (true) {
-        match iterator.next() {
-            record { string value; !... } s => {
-                io:println(s.value);
-            }
-            () => {
-                break;
-            }
-        }
+    //StringIterator iterator = name.iterate();
+    //
+    //while (true) {
+    //    match iterator.next() {
+    //        record { string value; !... } s => {
+    //            io:println(s.value);
+    //        }
+    //        () => {
+    //            break;
+    //        }
+    //    }
+    //}
+
+    foreach c in name {
+        io:println(c);
     }
 
-    io:println("done");
 }

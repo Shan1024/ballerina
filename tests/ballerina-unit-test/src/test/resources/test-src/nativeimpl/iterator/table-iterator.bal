@@ -18,7 +18,6 @@ function testTableIterator() {
     };
 
     TableIterator iterator = data.iterate();
-
     while (true) {
         match iterator.next() {
             record { any value; !... } s => {
@@ -28,6 +27,12 @@ function testTableIterator() {
                 break;
             }
         }
+    }
+
+    io:println("done");
+
+    foreach d,e in data {
+        io:println(d,e);
     }
 
     io:println("done");
