@@ -2,8 +2,6 @@ import ballerina/io;
 
 function testMapIterator() {
 
-    io:println("done");
-
     //string key;
     //any value;
     //
@@ -25,12 +23,8 @@ function testMapIterator() {
     //}
 
     foreach key, value in getData() {
-        io:print(key + " : ");
-        io:println(value);
+        io:println(key, " : ", value);
     }
-
-    io:println("done");
-
 }
 
 function getData() returns map {

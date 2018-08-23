@@ -817,7 +817,7 @@ public class Desugar extends BLangNodeVisitor {
             // }
             //
             //
-            // Example of rewritten `while` statement -
+            // Example of constructed `while` statement -
             //
             // map data = { "name": "Ballerina", "age": 2 };
             //
@@ -840,11 +840,12 @@ public class Desugar extends BLangNodeVisitor {
             //     }
             // }
 
-            // First create a block statement which will contain the generated statements.
+            // First, create a block statement which will contain all of the generated statements.
             BLangBlockStmt codeBlock = (BLangBlockStmt) TreeBuilder.createBlockNode();
             codeBlock.pos = foreach.pos;
 
-            // Create a new variable definition for the first variable reference in the foreach statement.
+            // Create a new variable definition for the first variable reference in the foreach statement -
+            // string key;
             BLangExpression firstVarRef = foreach.varRefs.get(0);
             String firstVarRefName = ((BLangSimpleVarRef) firstVarRef).variableName.value;
             BLangVariable keyVariable = ASTBuilderUtil.createVariable(foreach.pos, firstVarRefName, firstVarRef.type,
@@ -859,7 +860,8 @@ public class Desugar extends BLangNodeVisitor {
             String secondVarRefName = null;
             BLangVariable valueVariable = null;
             if (foreach.varRefs.size() == 2) {
-                // Create a new variable definition for the second variable reference in the foreach statement.
+                // Create a new variable definition for the second variable reference in the foreach statement -
+                // any value;
                 secondVarRef = foreach.varRefs.get(1);
                 secondVarRefName = ((BLangSimpleVarRef) secondVarRef).variableName.value;
                 valueVariable = ASTBuilderUtil.createVariable(foreach.pos, secondVarRefName, secondVarRef.type, null,
@@ -870,8 +872,7 @@ public class Desugar extends BLangNodeVisitor {
             }
 
             // START Assignment statement ------------------------------------------------------------------------------
-            // Create new assignment node -
-            // var _$$_iterator = data.iterate();
+            // Create new assignment node - var _$$_iterator = data.iterate();
             Scope.ScopeEntry scopeEntry = symTable.rootScope.lookup(names.fromString(MAP_ITERATE_FUNCTION));
             BInvokableSymbol iterateFunctionSymbol = (BInvokableSymbol) scopeEntry.symbol;
             BLangInvocation functionInvocation = ASTBuilderUtil.createInvocationExpr(codeBlock.pos,
@@ -883,21 +884,20 @@ public class Desugar extends BLangNodeVisitor {
             BAttachedFunction nextFunction = attachedFunctions.stream()
                     .filter(f -> f.funcName.getValue().equals(ITERATOR_NEXT_FUNCTION))
                     .findAny().get();
-
+            // Create the invocation expression - data.iterate()
             BLangInvocation invocationExpr = ASTBuilderUtil.createInvocationExpr(foreach.pos, iterateFunctionSymbol,
                     new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), symResolver);
             invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, ITERATE_FUNCTION);
             invocationExpr.expr = (BLangVariableReference) foreach.collection;
-
             BVarSymbol varSymbol = new BVarSymbol(0, names.fromString(ITERATOR_VARIABLE_NAME),
                     this.env.scope.owner.pkgID, invocationExpr.type, this.env.scope.owner);
             BLangSimpleVarRef variableRef = ASTBuilderUtil.createVariableRef(foreach.pos, varSymbol);
 
-            // Create a new assignment node.
+            // Create the new assignment node - var _$$_iterator = data.iterate()
             BLangAssignment assignmentNode = ASTBuilderUtil.createAssignmentStmt(foreach.pos, variableRef,
                     invocationExpr, true);
             assignmentNode.parent = codeBlock;
-
+            // Add the created assignment statement to the code block.
             codeBlock.addStatement(assignmentNode);
             // END Assignment statement --------------------------------------------------------------------------------
 
@@ -905,14 +905,12 @@ public class Desugar extends BLangNodeVisitor {
             // Create a new while statement node.
             BLangWhile whileStatement = (BLangWhile) TreeBuilder.createWhileNode();
             whileStatement.pos = foreach.pos;
-
-            // Create a boolean literal which had the value `true` for the condition of the while statement.
-            BLangLiteral literalExpression = ASTBuilderUtil.createLiteral(foreach.pos, symTable.booleanType, true);
-            whileStatement.expr = literalExpression;
-
+            // Create a new code block for while statement body.
             BLangBlockStmt whileStatementBody = (BLangBlockStmt) TreeBuilder.createBlockNode();
             whileStatement.pos = foreach.pos;
 
+            // Create a boolean literal which had the value `true` for the condition of the while statement.
+            whileStatement.expr = ASTBuilderUtil.createLiteral(foreach.pos, symTable.booleanType, true);
 
             // START Match ---------------------------------------------------------------------------------------------
             BLangInvocation invocationNode = ASTBuilderUtil.createInvocationExprForMethod(codeBlock.pos,
@@ -920,6 +918,7 @@ public class Desugar extends BLangNodeVisitor {
             invocationNode.name = ASTBuilderUtil.createIdentifier(foreach.pos, ITERATOR_NEXT_FUNCTION);
             invocationNode.expr = variableRef;
 
+            // Create a new list which will contain the patterns which will be used to create the match statement.
             List<BLangMatchStmtPatternClause> patternClauses = new LinkedList<>();
 
             // Create record pattern -
@@ -929,55 +928,47 @@ public class Desugar extends BLangNodeVisitor {
             BLangMatchStmtPatternClause patternClause =
                     (BLangMatchStmtPatternClause) TreeBuilder.createMatchStatementPattern();
             patternClause.pos = foreach.pos;
-
-
+            // Get the type from the return type of the `next` function.
             BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
-
             BVarSymbol patternSymbol = new BVarSymbol(0, names.fromString(RECORD_VARIABLE_NAME),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-
-            BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, RECORD_VARIABLE_NAME,
+            patternClause.variable = ASTBuilderUtil.createVariable(foreach.pos, RECORD_VARIABLE_NAME,
                     returnType, null, patternSymbol);
-
-            patternClause.variable = valueVariable2;
+            // Add the current foreach statements body as the pattern clause's body.
             patternClause.body = foreach.body;
 
-
+            // Create a new assignment statement - key = rec.key;
             BLangSimpleVarRef patternVariableVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, patternSymbol);
-
-
             BLangSimpleVarRef newKeyVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
             BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, firstVarRefName);
             BLangFieldBasedAccess rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, keyIdentifier);
-
             BVarSymbol keySymbol = new BVarSymbol(0, names.fromString(firstVarRefName),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
             rhs.symbol = keySymbol;
             rhs.type = ((BRecordType) keySymbol.type).fields.get(0).type;
-
             BLangAssignment keyAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newKeyVarRef, rhs,
                     false);
+            // Add the assignment statement to the beginning of the pattern clause's body.
             patternClause.body.getStatements().add(0, keyAssignmentStmt);
 
-
+            // Check for the number of variable references in the `foreach` statement before adding the second
+            // assignment statement.
             if (foreach.varRefs.size() == 2 && valueVariable != null) {
+                // Create a new assignment statement - value = rec.value;
                 BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
                 BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, secondVarRefName);
                 rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
-
                 BVarSymbol valueSymbol = new BVarSymbol(0, names.fromString(secondVarRefName),
                         this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
                 rhs.symbol = valueSymbol;
                 rhs.type = ((BRecordType) valueSymbol.type).fields.get(1).type;
-
                 BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
                         rhs, false);
-
+                // Add the assignment statement after the previous assignment statement.
                 patternClause.body.getStatements().add(1, valueAssignmentStmt);
             }
-
+            // Add the created pattern clause to the list.
             patternClauses.add(patternClause);
-
 
             // Create nil pattern -
             // () => {
@@ -993,6 +984,7 @@ public class Desugar extends BLangNodeVisitor {
             valueVariable3.type = symTable.nilType;
             patternClause.variable = valueVariable3;
 
+            // Create the `break` statement.
             BLangBreak breakNode = (BLangBreak) TreeBuilder.createBreakNode();
             breakNode.pos = foreach.pos;
             BLangBlockStmt patternClauseBody = (BLangBlockStmt) TreeBuilder.createBlockNode();
@@ -1000,6 +992,7 @@ public class Desugar extends BLangNodeVisitor {
             patternClauseBody.addStatement(breakNode);
             patternClause.body = patternClauseBody;
 
+            // Add the created pattern clause to the list.
             patternClauses.add(patternClause);
 
             // Create the match statement.
@@ -1012,6 +1005,7 @@ public class Desugar extends BLangNodeVisitor {
             codeBlock.addStatement(whileStatement);
             // END While ---------------------------------------------------------------------------------------------
 
+            // Rewrite the code block.
             rewrite(codeBlock, this.env);
             result = codeBlock;
         } else {
