@@ -236,7 +236,10 @@ public class Desugar extends BLangNodeVisitor {
     private BLangAssignment safeNavigationAssignment;
 
     private static final String MAP_ITERATE_FUNCTION = "map.iterate";
-    private static final String MAP_ITERATE_NEXT_FUNCTION = "map.iterate.next";
+    private static final String ITERATOR_NEXT_FUNCTION = "next";
+    private static final String ITERATE_FUNCTION = "next";
+    private static final String ITERATOR_VARIABLE_NAME = "_$$_iterator";
+    private static final String RECORD_VARIABLE_NAME = "_$$_record";
 
     public static Desugar getInstance(CompilerContext context) {
         Desugar desugar = context.get(DESUGAR_KEY);
@@ -804,87 +807,91 @@ public class Desugar extends BLangNodeVisitor {
 
         if (foreach.collection.type.tag == TypeTags.MAP) {
 
+            // Here we rewrite the `foreach` statement using a `while` statement and a `match` statement.
+            // Example `foreach` statement -
+            //
+            // map data = { "name": "Ballerina", "age": 2 };
+            //
+            // foreach key, value in data {
+            //     io:println(key, " : ", value);
+            // }
+            //
+            //
+            // Example of rewritten `while` statement -
+            //
+            // map data = { "name": "Ballerina", "age": 2 };
+            //
+            // string key;
+            // any value;
+            //
+            // var iterator = data.iterate();
+            // while (true) {
+            //     match iterator.next() {
+            //         record { string key; any value; !... } rec => {
+            //
+            //             key = rec.key;
+            //             value = rec.value;
+            //
+            //             io:println(key, " : ", value);
+            //         }
+            //         () => {
+            //             break;
+            //         }
+            //     }
+            // }
+
             // First create a block statement which will contain the generated statements.
             BLangBlockStmt codeBlock = (BLangBlockStmt) TreeBuilder.createBlockNode();
             codeBlock.pos = foreach.pos;
 
-            // Create new 'key' variable.
-            BLangExpression keyVarRef = foreach.varRefs.stream()
-                    .filter(v1 -> ((BLangSimpleVarRef) v1).variableName.value.equals("key"))
-                    .findAny().get();
-            BLangVariable keyVariable = ASTBuilderUtil.createVariable(foreach.pos, "key", keyVarRef.type, null,
-                    ((BVarSymbol) ((BLangSimpleVarRef) keyVarRef).symbol));
+            // Create a new variable definition for the first variable reference in the foreach statement.
+            BLangExpression firstVarRef = foreach.varRefs.get(0);
+            String firstVarRefName = ((BLangSimpleVarRef) firstVarRef).variableName.value;
+            BLangVariable keyVariable = ASTBuilderUtil.createVariable(foreach.pos, firstVarRefName, firstVarRef.type,
+                    null, ((BVarSymbol) ((BLangSimpleVarRef) firstVarRef).symbol));
             BLangVariableDef keyVariableDefinition = ASTBuilderUtil.createVariableDef(foreach.pos, keyVariable);
             keyVariableDefinition.pos = foreach.pos;
             codeBlock.addStatement(keyVariableDefinition);
 
-            // Create new 'value' variable.
-            BLangExpression valueVarRef = foreach.varRefs.stream()
-                    .filter(v1 -> ((BLangSimpleVarRef) v1).variableName.value.equals("value"))
-                    .findAny().get();
-            BLangVariable valueVariable = ASTBuilderUtil.createVariable(foreach.pos, "value", valueVarRef.type, null,
-                    ((BVarSymbol) ((BLangSimpleVarRef) valueVarRef).symbol));
-            BLangVariableDef valueVariableDefinition = ASTBuilderUtil.createVariableDef(foreach.pos, valueVariable);
-            valueVariableDefinition.pos = foreach.pos;
-            codeBlock.addStatement(valueVariableDefinition);
+            // foreach statement might only have a single variable reference. So we need to check before creating
+            // another variable definition.
+            BLangExpression secondVarRef;
+            String secondVarRefName = null;
+            BLangVariable valueVariable = null;
+            if (foreach.varRefs.size() == 2) {
+                // Create a new variable definition for the second variable reference in the foreach statement.
+                secondVarRef = foreach.varRefs.get(1);
+                secondVarRefName = ((BLangSimpleVarRef) secondVarRef).variableName.value;
+                valueVariable = ASTBuilderUtil.createVariable(foreach.pos, secondVarRefName, secondVarRef.type, null,
+                        ((BVarSymbol) ((BLangSimpleVarRef) secondVarRef).symbol));
+                BLangVariableDef valueVariableDefinition = ASTBuilderUtil.createVariableDef(foreach.pos, valueVariable);
+                valueVariableDefinition.pos = foreach.pos;
+                codeBlock.addStatement(valueVariableDefinition);
+            }
 
             // START Assignment statement ------------------------------------------------------------------------------
-            // Create new assignment node - var _$$_iterator = data.iterate();
+            // Create new assignment node -
+            // var _$$_iterator = data.iterate();
             Scope.ScopeEntry scopeEntry = symTable.rootScope.lookup(names.fromString(MAP_ITERATE_FUNCTION));
             BInvokableSymbol iterateFunctionSymbol = (BInvokableSymbol) scopeEntry.symbol;
             BLangInvocation functionInvocation = ASTBuilderUtil.createInvocationExpr(codeBlock.pos,
                     iterateFunctionSymbol, new LinkedList<>(), symResolver);
 
-            // Get the next function.
+            // Get the `next` function from attached functions.
             BTypeSymbol tsymbol = functionInvocation.type.tsymbol;
             List<BAttachedFunction> attachedFunctions = ((BObjectTypeSymbol) tsymbol).attachedFuncs;
             BAttachedFunction nextFunction = attachedFunctions.stream()
-                    .filter(f -> f.funcName.getValue().equals("next"))
+                    .filter(f -> f.funcName.getValue().equals(ITERATOR_NEXT_FUNCTION))
                     .findAny().get();
-
-            // Todo - rewrite using util methods
-
-            //            ASTBuilderUtil.createVariable(foreach.pos,"_$$_iterator",functionInvocation.type
-            // .getReturnType(),
-            //                    functionInvocation,((BLangVariable)functionInvocation).varSymbol);
-
-
-            // varref?
-            //            foreach.collection
-
-            //            BLangSimpleVarRef variableRef = ASTBuilderUtil.createVariableRef(foreach.pos,
-            //                    (BVarSymbol) ((BLangRef) foreach.collection).symbol);
-            //
-            //            BLangAttachedFunctionInvocation attachedFunctionInvocation =
-            //                    new BLangAttachedFunctionInvocation(foreach.pos, new LinkedList<>(), new
-            // LinkedList<>(),
-            //                            new LinkedList<>(), iterateFunctionSymbol, iterateFunctionSymbol.type
-            // .getReturnType(),
-            //                            foreach.collection, false);
-            //            attachedFunctionInvocation.desugared = true;
 
             BLangInvocation invocationExpr = ASTBuilderUtil.createInvocationExpr(foreach.pos, iterateFunctionSymbol,
                     new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), symResolver);
-            invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, "iterate");
+            invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, ITERATE_FUNCTION);
             invocationExpr.expr = (BLangVariableReference) foreach.collection;
 
-            BVarSymbol varSymbol = new BVarSymbol(0,
-                    names.fromString("_$$_iterator"),
+            BVarSymbol varSymbol = new BVarSymbol(0, names.fromString(ITERATOR_VARIABLE_NAME),
                     this.env.scope.owner.pkgID, invocationExpr.type, this.env.scope.owner);
-            //            BLangVariable iterator1 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_iterator",
-            //                    attachedFunctionInvocation.type, null,
-            //                    varSymbol);
-
             BLangSimpleVarRef variableRef = ASTBuilderUtil.createVariableRef(foreach.pos, varSymbol);
-
-
-            //            BLangIdentifier iterator = (BLangIdentifier) TreeBuilder.createIdentifierNode();
-            //            iterator.setValue("_$$_iterator");
-            //
-            //            BLangSimpleVarRef varRef = (BLangSimpleVarRef) TreeBuilder
-            // .createSimpleVariableReferenceNode();
-            //            varRef.variableName = iterator;
-
 
             // Create a new assignment node.
             BLangAssignment assignmentNode = ASTBuilderUtil.createAssignmentStmt(foreach.pos, variableRef,
@@ -907,75 +914,43 @@ public class Desugar extends BLangNodeVisitor {
             whileStatement.pos = foreach.pos;
 
 
-            // match _$$_iterator.next() {
-            //     record { string key; any value; !... } _$$_record => {
-            //         Todo - rewrite all `key` to `_$$_record.key`
-            //         Todo - rewrite all `value` to `_$$_record.value`
-            //     }
-            //     () => {
-            //         break;
-            //     }
-            // }
-
             // START Match ---------------------------------------------------------------------------------------------
-
-
-            BLangAttachedFunctionInvocation nextFunctionInvocation = new BLangAttachedFunctionInvocation(foreach.pos,
-                    new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), nextFunction.symbol,
-                    nextFunction.type.retType, variableRef, false);
-//            nextFunctionInvocation.desugared = true;
-
             BLangInvocation invocationNode = ASTBuilderUtil.createInvocationExprForMethod(codeBlock.pos,
                     nextFunction.symbol, new ArrayList<>(), symResolver);
-            invocationNode.name = ASTBuilderUtil.createIdentifier(foreach.pos, "next");
+            invocationNode.name = ASTBuilderUtil.createIdentifier(foreach.pos, ITERATOR_NEXT_FUNCTION);
             invocationNode.expr = variableRef;
-
-//            invocationNode.desugared = true;
-
-            //            BVarSymbol nextSymbol = new BVarSymbol(0, names.fromString("_$$_next"),
-            //                    this.env.scope.owner.pkgID, nextFunctionInvocation.type, this.env.scope.owner);
-            //
-            //            BLangVariable nextVariable = ASTBuilderUtil.createVariable(foreach.pos, "_$$_next",
-            //                    nextFunction.type.retType, nextFunctionInvocation, nextSymbol);
-            //
-            //            BLangVariableDef variableDef = ASTBuilderUtil.createVariableDef(foreach.pos, nextVariable);
-            //            variableDef.desugared = true;
-            //
-            //            whileStatementBody.addStatement(variableDef);
 
             List<BLangMatchStmtPatternClause> patternClauses = new LinkedList<>();
 
-            // Todo - record { string key; any value; !... } _$$_record => {}
-
-            // Create record pattern.
+            // Create record pattern -
+            // record { string key; any value; !... } _$$_record => {
+            //     ...
+            // }
             BLangMatchStmtPatternClause patternClause =
                     (BLangMatchStmtPatternClause) TreeBuilder.createMatchStatementPattern();
             patternClause.pos = foreach.pos;
 
-            // todo - current return value
-            //            BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst
-            // ().get();
+
             BType returnType = ((BUnionType) nextFunction.type.retType).memberTypes.stream().findFirst().get();
 
-            BVarSymbol patternSymbol = new BVarSymbol(0, names.fromString("_$$_record"),
+            BVarSymbol patternSymbol = new BVarSymbol(0, names.fromString(RECORD_VARIABLE_NAME),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
 
-            BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, "_$$_record", returnType, null,
-                    patternSymbol);
+            BLangVariable valueVariable2 = ASTBuilderUtil.createVariable(foreach.pos, RECORD_VARIABLE_NAME,
+                    returnType, null, patternSymbol);
 
             patternClause.variable = valueVariable2;
             patternClause.body = foreach.body;
 
-            // Todo - Create variable assignment statements
 
             BLangSimpleVarRef patternVariableVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, patternSymbol);
 
 
             BLangSimpleVarRef newKeyVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
-            BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "key");
+            BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, firstVarRefName);
             BLangFieldBasedAccess rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, keyIdentifier);
 
-            BVarSymbol keySymbol = new BVarSymbol(0, names.fromString("key"),
+            BVarSymbol keySymbol = new BVarSymbol(0, names.fromString(firstVarRefName),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
             rhs.symbol = keySymbol;
             rhs.type = ((BRecordType) keySymbol.type).fields.get(0).type;
@@ -985,26 +960,29 @@ public class Desugar extends BLangNodeVisitor {
             patternClause.body.getStatements().add(0, keyAssignmentStmt);
 
 
-            BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
-            BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "value");
-            rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
+            if (foreach.varRefs.size() == 2 && valueVariable != null) {
+                BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
+                BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, secondVarRefName);
+                rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
 
-            BVarSymbol valueSymbol = new BVarSymbol(0, names.fromString("value"),
-                    this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-            rhs.symbol = valueSymbol;
-            rhs.type = ((BRecordType) valueSymbol.type).fields.get(1).type;
+                BVarSymbol valueSymbol = new BVarSymbol(0, names.fromString(secondVarRefName),
+                        this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
+                rhs.symbol = valueSymbol;
+                rhs.type = ((BRecordType) valueSymbol.type).fields.get(1).type;
 
-            BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
-                    rhs, false);
+                BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
+                        rhs, false);
 
-            patternClause.body.getStatements().add(1, valueAssignmentStmt);
-
+                patternClause.body.getStatements().add(1, valueAssignmentStmt);
+            }
 
             patternClauses.add(patternClause);
 
 
-            // Todo - () => {}
-            // Create nil pattern.
+            // Create nil pattern -
+            // () => {
+            //     break;
+            // }
             patternClause = (BLangMatchStmtPatternClause) TreeBuilder.createMatchStatementPattern();
             patternClause.pos = foreach.pos;
             BLangVariable valueVariable3 = (BLangVariable) TreeBuilder.createVariableNode();
@@ -1024,10 +1002,9 @@ public class Desugar extends BLangNodeVisitor {
 
             patternClauses.add(patternClause);
 
-
+            // Create the match statement.
             BLangMatch matchStatement = ASTBuilderUtil.createMatchStatement(foreach.pos, invocationNode,
                     patternClauses);
-
             whileStatementBody.addStatement(matchStatement);
             // End Match ---------------------------------------------------------------------------------------------
 
@@ -1037,7 +1014,6 @@ public class Desugar extends BLangNodeVisitor {
 
             rewrite(codeBlock, this.env);
             result = codeBlock;
-
         } else {
             foreach.varRefs = rewrite(foreach.varRefs, env);
             foreach.collection = rewriteExpr(foreach.collection);
