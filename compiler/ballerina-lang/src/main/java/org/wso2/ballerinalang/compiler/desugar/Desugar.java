@@ -237,6 +237,7 @@ public class Desugar extends BLangNodeVisitor {
 
     private static final String MAP_ITERATE_FUNCTION = "map.iterate";
     private static final String TABLE_ITERATE_FUNCTION = "table.iterate";
+    private static final String XML_ITERATE_FUNCTION = "xml.iterate";
     private static final String ITERATOR_NEXT_FUNCTION = "next";
 
     public static Desugar getInstance(CompilerContext context) {
@@ -803,7 +804,8 @@ public class Desugar extends BLangNodeVisitor {
     @Override
     public void visit(BLangForeach foreach) {
 
-        if (foreach.collection.type.tag == TypeTags.MAP || foreach.collection.type.tag == TypeTags.TABLE) {
+        if (foreach.collection.type.tag == TypeTags.MAP || foreach.collection.type.tag == TypeTags.TABLE
+                || foreach.collection.type.tag == TypeTags.XML) {
 
             // Here we rewrite the `foreach` statement using a `while` statement and a `match` statement.
             // Example `foreach` statement -
@@ -855,7 +857,7 @@ public class Desugar extends BLangNodeVisitor {
             // foreach statement might only have a single variable reference. So we need to check before creating
             // another variable definition.
             BLangExpression secondVarRef;
-            String secondVarRefName = null;
+            String secondVarRefName;
             BLangVariable valueVariable = null;
             if (foreach.varRefs.size() == 2) {
                 // Create a new variable definition for the second variable reference in the foreach statement -
@@ -876,7 +878,10 @@ public class Desugar extends BLangNodeVisitor {
                 scopeEntry = symTable.rootScope.lookup(names.fromString(MAP_ITERATE_FUNCTION));
             } else if (foreach.collection.type.tag == TypeTags.TABLE) {
                 scopeEntry = symTable.rootScope.lookup(names.fromString(TABLE_ITERATE_FUNCTION));
+            } else if (foreach.collection.type.tag == TypeTags.XML) {
+                scopeEntry = symTable.rootScope.lookup(names.fromString(XML_ITERATE_FUNCTION));
             }
+
             BInvokableSymbol iterateFunctionSymbol = (BInvokableSymbol) scopeEntry.symbol;
             BLangInvocation functionInvocation = ASTBuilderUtil.createInvocationExpr(codeBlock.pos,
                     iterateFunctionSymbol, new LinkedList<>(), symResolver);
@@ -944,8 +949,12 @@ public class Desugar extends BLangNodeVisitor {
             String firstFieldName = null;
             if (foreach.collection.type.tag == TypeTags.MAP) {
                 firstFieldName = "key";
-            } else if (foreach.collection.type.tag == TypeTags.TABLE) {
-                firstFieldName = "value";
+            } else if (foreach.collection.type.tag == TypeTags.TABLE || foreach.collection.type.tag == TypeTags.XML) {
+                if (foreach.varRefs.size() == 1) {
+                    firstFieldName = "value";
+                } else if (foreach.varRefs.size() == 2) {
+                    firstFieldName = "index";
+                }
             }
 
             // Create a new assignment statement - key = rec.key;
@@ -953,9 +962,8 @@ public class Desugar extends BLangNodeVisitor {
             BLangSimpleVarRef newKeyVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
             BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, firstFieldName);
             BLangFieldBasedAccess rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, keyIdentifier);
-            BVarSymbol keySymbol = new BVarSymbol(0, names.fromString(firstFieldName),
+            rhs.symbol = new BVarSymbol(0, names.fromString(firstFieldName),
                     this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-            rhs.symbol = keySymbol;
             rhs.type = foreach.varRefs.get(0).type;
 
 
@@ -973,9 +981,8 @@ public class Desugar extends BLangNodeVisitor {
                 BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
                 BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "value");
                 rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
-                BVarSymbol valueSymbol = new BVarSymbol(0, names.fromString("value"),
+                rhs.symbol = new BVarSymbol(0, names.fromString("value"),
                         this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-                rhs.symbol = valueSymbol;
                 rhs.type = foreach.varRefs.get(1).type;
                 BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
                         rhs, false);

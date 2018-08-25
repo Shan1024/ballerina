@@ -74,16 +74,19 @@ type TableConfig record {
 public type TableIterator object {
 
     private table data;
+    private int idx;
 
     new(data) {
+        idx = -1;
     }
 
-    public function next() returns record { any value; !... }? {
+    public function next() returns record { int index; any value; !... }? {
         if (!data.hasNext()) {
             return ();
         }
         any row = data.getNext();
-        return { value: row };
+        idx++;
+        return { index: idx, value: row };
     }
 };
 

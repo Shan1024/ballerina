@@ -20,7 +20,7 @@ function testTableIterator() {
     TableIterator iterator = data.iterate();
     while (true) {
         match iterator.next() {
-            record { any value; !... } s => {
+            record { int index; any value; !... } s => {
                 io:println(s.value);
             }
             () => {
@@ -28,11 +28,16 @@ function testTableIterator() {
             }
         }
     }
+    io:println("done");
+
+    foreach d in data {
+        io:println(d);
+    }
 
     io:println("done");
 
     foreach d,e in data {
-        io:println(d,e);
+        io:println(d, " : ", e);
     }
 
     io:println("done");

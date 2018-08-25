@@ -116,20 +116,20 @@ public extern function xml::removeChildren(string qname);
 public type XmlIterator object {
 
     private xml data;
-    private int index;
+    private int idx;
 
     new(data) {
-        index = 0;
+        idx = 0;
     }
 
-    public function next() returns record { xml value; !... }? {
+    public function next() returns record { int index; xml value; !... }? {
         int length = lengthof data;
-        if (index == length) {
+        if (idx == length) {
             return ();
         }
-        xml slice = data.slice(index, index + 1);
-        index++;
-        return { value: slice };
+        xml slice = data.slice(idx, idx + 1);
+        idx++;
+        return { index: idx, value: slice };
     }
 };
 
