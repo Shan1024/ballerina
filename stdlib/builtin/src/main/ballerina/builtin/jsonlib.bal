@@ -34,6 +34,32 @@ public extern function json::getKeys() returns (string[]);
 # + options - jsonOptions struct for JSON to XML conversion properties
 # + return - The XML representation of the JSON
 public extern function json::toXML(record {
-                                         string attributePrefix = "@",
-                                         string arrayEntryTag = "item",
-                                     } options) returns (xml|error);
+                                       string attributePrefix = "@",
+                                       string arrayEntryTag = "item",
+                                   } options) returns (xml|error);
+
+public type JsonIterator object {
+
+    private json data;
+    private int index;
+
+    new(data) {
+        index = 0;
+    }
+
+    public function next() returns record { any value; !... }? {
+        string[] keys = data.getKeys();
+        int length = lengthof keys;
+        if (index == length) {
+            return ();
+        }
+        string val = keys[index];
+        index++;
+        return { value: val };
+    }
+};
+
+public function json::iterate() returns JsonIterator {
+    JsonIterator iterator = new(self);
+    return iterator;
+}
