@@ -509,6 +509,14 @@ public class Types {
                     errorTypes = Lists.of(symTable.stringType, symTable.anyType);
                 }
                 break;
+            case TypeTags.STRING:
+                if (variableSize == 1) {
+                    return Lists.of(symTable.stringType);
+                } else {
+                    maxSupportedTypes = 1;
+                    errorTypes = Lists.of(symTable.stringType);
+                }
+                break;
             case TypeTags.ERROR:
                 return Collections.nCopies(variableSize, symTable.errType);
             default:
@@ -849,12 +857,12 @@ public class Types {
             if (isSameType(s, t)) {
                 return createConversionOperatorSymbol(s, t, true, InstructionCodes.NOP);
             } else if (s.tag == TypeTags.OBJECT || s.tag == TypeTags.RECORD) {
-//                TODO: do type checking and fail for obvious incompatible types
-//                if (checkStructToJSONConvertibility(s)) {
-//                    return createConversionOperatorSymbol(s, t, false, InstructionCodes.T2JSON);
-//                } else {
-//                    return symTable.notFoundSymbol;
-//                }
+                //                TODO: do type checking and fail for obvious incompatible types
+                //                if (checkStructToJSONConvertibility(s)) {
+                //                    return createConversionOperatorSymbol(s, t, false, InstructionCodes.T2JSON);
+                //                } else {
+                //                    return symTable.notFoundSymbol;
+                //                }
                 return createConversionOperatorSymbol(s, t, false, InstructionCodes.T2JSON);
             } else if (s.tag == TypeTags.JSON) {
                 if (t.constraint.tag == TypeTags.NONE) {
@@ -1279,7 +1287,7 @@ public class Types {
      * i.e: A variable of the given type can be initialized without a rhs expression.
      * eg: foo x;
      *
-     * @param pos position of the variable.
+     * @param pos  position of the variable.
      * @param type Type to check the existence if a default value
      * @return Flag indicating whether the given type has a default value
      */

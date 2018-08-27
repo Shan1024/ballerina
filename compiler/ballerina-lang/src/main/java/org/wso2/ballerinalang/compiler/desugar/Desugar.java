@@ -238,6 +238,7 @@ public class Desugar extends BLangNodeVisitor {
     private static final String TABLE_ITERATE_FUNCTION = "table.iterate";
     private static final String XML_ITERATE_FUNCTION = "xml.iterate";
     private static final String JSON_ITERATE_FUNCTION = "json.iterate";
+    private static final String STRING_ITERATE_FUNCTION = "string.iterate";
     private static final String ITERATOR_NEXT_FUNCTION = "next";
 
     public static Desugar getInstance(CompilerContext context) {
@@ -805,7 +806,8 @@ public class Desugar extends BLangNodeVisitor {
     public void visit(BLangForeach foreach) {
 
         if (foreach.collection.type.tag == TypeTags.MAP || foreach.collection.type.tag == TypeTags.TABLE
-                || foreach.collection.type.tag == TypeTags.XML || foreach.collection.type.tag == TypeTags.JSON) {
+                || foreach.collection.type.tag == TypeTags.XML || foreach.collection.type.tag == TypeTags.JSON
+                || foreach.collection.type.tag == TypeTags.STRING) {
 
             // Here we rewrite the `foreach` statement using a `while` statement and a `match` statement.
             // Example `foreach` statement -
@@ -882,6 +884,8 @@ public class Desugar extends BLangNodeVisitor {
                 scopeEntry = symTable.rootScope.lookup(names.fromString(XML_ITERATE_FUNCTION));
             } else if (foreach.collection.type.tag == TypeTags.JSON) {
                 scopeEntry = symTable.rootScope.lookup(names.fromString(JSON_ITERATE_FUNCTION));
+            } else if (foreach.collection.type.tag == TypeTags.STRING) {
+                scopeEntry = symTable.rootScope.lookup(names.fromString(STRING_ITERATE_FUNCTION));
             }
 
             BInvokableSymbol iterateFunctionSymbol = (BInvokableSymbol) scopeEntry.symbol;
@@ -957,7 +961,7 @@ public class Desugar extends BLangNodeVisitor {
                 } else if (foreach.varRefs.size() == 2) {
                     firstFieldName = "index";
                 }
-            } else if (foreach.collection.type.tag == TypeTags.JSON) {
+            } else if (foreach.collection.type.tag == TypeTags.JSON || foreach.collection.type.tag == TypeTags.STRING) {
                 firstFieldName = "value";
             }
 
