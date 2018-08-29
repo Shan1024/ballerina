@@ -8,23 +8,28 @@ function testMapIterator() {
     //var iterator = getData().iterate();
     //while (true) {
     //    match iterator.next() {
-    //        record { string key; any value; !... } rec => {
+    //        record { (string, any) value; !... } rec => {
     //
-    //            key = rec.key;
-    //            value = rec.value;
+    //            key = rec.value[0];
+    //            value = rec.value[1];
     //
     //            io:print(key + " : ");
-    //            io:println(key);
+    //            io:println(value);
     //        }
     //        () => {
     //            break;
     //        }
     //    }
     //}
+    //
+    //io:println("done");
 
     foreach key, value in getData() {
         io:println(key, " : ", value);
     }
+
+    io:println("done");
+
 }
 
 function getData() returns map {

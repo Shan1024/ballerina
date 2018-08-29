@@ -47,7 +47,7 @@ public type MapIterator object {
         index = 0;
     }
 
-    public function next() returns record { string key; any value; !... }? {
+    public function next() returns record { (string, any) value; !... }? {
         int length = lengthof data;
         if (index == length) {
             return ();
@@ -56,7 +56,7 @@ public type MapIterator object {
         string key = keys[index];
         any value = data[key];
         index++;
-        return { key: key, value: value };
+        return { value: (key, value) };
     }
 };
 

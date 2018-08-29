@@ -10,8 +10,11 @@ function testJsonIterator() {
     JsonIterator iterator = data.iterate();
     while (true) {
         match iterator.next() {
-            record { any value; !... } s => {
-                io:println(s.value);
+            record { (string, any) value; !... } rec => {
+                string key = rec.value[0];
+                any value = rec.value[1];
+
+                io:println(key, " : ", value);
             }
             () => {
                 break;
@@ -26,4 +29,11 @@ function testJsonIterator() {
     }
 
     io:println("done");
+
+    // Json can have only one var ref
+    //foreach d, e in data {
+    //    io:println(d, " : ", e);
+    //}
+    //
+    //io:println("done");
 }

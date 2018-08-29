@@ -47,15 +47,16 @@ public type JsonIterator object {
         index = 0;
     }
 
-    public function next() returns record { any value; !... }? {
+    public function next() returns record { (string, any) value; !... }? {
         string[] keys = data.getKeys();
         int length = lengthof keys;
         if (index == length) {
             return ();
         }
-        string val = keys[index];
+        string key = keys[index];
+        any value = data[key];
         index++;
-        return { value: val };
+        return { value: (key, value) };
     }
 };
 

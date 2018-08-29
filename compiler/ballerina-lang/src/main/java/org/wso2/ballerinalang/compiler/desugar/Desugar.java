@@ -50,6 +50,7 @@ import org.wso2.ballerinalang.compiler.semantics.model.symbols.Symbols;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BArrayType;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BInvokableType;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BJSONType;
+import org.wso2.ballerinalang.compiler.semantics.model.types.BRecordType;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BStructureType;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BTableType;
 import org.wso2.ballerinalang.compiler.semantics.model.types.BType;
@@ -805,9 +806,9 @@ public class Desugar extends BLangNodeVisitor {
     @Override
     public void visit(BLangForeach foreach) {
 
-        if (foreach.collection.type.tag == TypeTags.MAP || foreach.collection.type.tag == TypeTags.TABLE
-                || foreach.collection.type.tag == TypeTags.XML || foreach.collection.type.tag == TypeTags.JSON
-                || foreach.collection.type.tag == TypeTags.STRING) {
+        if (/*foreach.collection.type.tag == TypeTags.MAP || foreach.collection.type.tag == TypeTags.TABLE
+                || foreach.collection.type.tag == TypeTags.XML || */foreach.collection.type.tag == TypeTags.JSON
+            /*       || foreach.collection.type.tag == TypeTags.STRING*/) {
 
             // Here we rewrite the `foreach` statement using a `while` statement and a `match` statement.
             // Example `foreach` statement -
@@ -901,7 +902,7 @@ public class Desugar extends BLangNodeVisitor {
             // Create the invocation expression - data.iterate()
             BLangInvocation invocationExpr = ASTBuilderUtil.createInvocationExpr(foreach.pos, iterateFunctionSymbol,
                     new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), symResolver);
-            invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, "next");
+            invocationExpr.name = ASTBuilderUtil.createIdentifier(foreach.pos, ITERATOR_NEXT_FUNCTION);
             invocationExpr.expr = (BLangVariableReference) foreach.collection;
             BVarSymbol varSymbol = new BVarSymbol(0, names.fromString("_$$_iterator"),
                     this.env.scope.owner.pkgID, invocationExpr.type, this.env.scope.owner);
@@ -952,28 +953,49 @@ public class Desugar extends BLangNodeVisitor {
             patternClause.body = foreach.body;
 
 
-            String firstFieldName = null;
-            if (foreach.collection.type.tag == TypeTags.MAP) {
-                firstFieldName = "key";
-            } else if (foreach.collection.type.tag == TypeTags.TABLE || foreach.collection.type.tag == TypeTags.XML) {
-                if (foreach.varRefs.size() == 1) {
-                    firstFieldName = "value";
-                } else if (foreach.varRefs.size() == 2) {
-                    firstFieldName = "index";
-                }
-            } else if (foreach.collection.type.tag == TypeTags.JSON || foreach.collection.type.tag == TypeTags.STRING) {
-                firstFieldName = "value";
-            }
+            String filedName = "value";
+            //            if (foreach.collection.type.tag == TypeTags.MAP) {
+            //                filedName = "value";
+            //            } else if (foreach.collection.type.tag == TypeTags.TABLE || foreach.collection.type.tag ==
+            // TypeTags.XML) {
+            //                if (foreach.varRefs.size() == 1) {
+            //                    filedName = "value";
+            //                } else if (foreach.varRefs.size() == 2) {
+            //                    filedName = "index";
+            //                }
+            //            } else if (foreach.collection.type.tag == TypeTags.JSON || foreach.collection.type.tag ==
+            // TypeTags.STRING) {
+            //                filedName = "value";
+            //            }
 
             // Create a new assignment statement - key = rec.key;
             BLangSimpleVarRef patternVariableVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, patternSymbol);
             BLangSimpleVarRef newKeyVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, keyVariable.symbol);
-            BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, firstFieldName);
-            BLangFieldBasedAccess rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, keyIdentifier);
-            rhs.symbol = new BVarSymbol(0, names.fromString(firstFieldName),
-                    this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-            rhs.type = foreach.varRefs.get(0).type;
+            BLangIdentifier keyIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, filedName);
+            BLangAccessExpression rhs;
 
+            //            if (foreach.collection.type.tag == TypeTags.MAP) {
+
+            BLangFieldBasedAccess fieldAccessExpr = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef,
+                    keyIdentifier);
+            fieldAccessExpr.symbol = new BVarSymbol(0, names.fromString(filedName),
+                    this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
+            fieldAccessExpr.type = ((BRecordType) patternSymbol.type).fields.get(0).type;
+
+            BVarSymbol varsym = new BVarSymbol(0, names.fromString("_$$_record.value"),
+                    this.env.scope.owner.pkgID, invocationExpr.type, this.env.scope.owner);
+
+            BLangLiteral index0 = ASTBuilderUtil.createLiteral(foreach.pos, symTable.stringType, "0");
+            rhs = ASTBuilderUtil.createIndexBasesAccessExpr(foreach.pos,
+                    foreach.varRefs.get(0).type, varsym, index0);
+            rhs.expr = fieldAccessExpr;
+
+            //            } else {
+            //                rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, keyIdentifier);
+            //                rhs.symbol = new BVarSymbol(0, names.fromString(filedName),
+            //                        this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
+            //                rhs.type = foreach.varRefs.get(0).type;
+            //            }
 
             BLangAssignment keyAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newKeyVarRef, rhs,
                     false);
@@ -985,17 +1007,40 @@ public class Desugar extends BLangNodeVisitor {
             // Check for the number of variable references in the `foreach` statement before adding the second
             // assignment statement.
             if (foreach.varRefs.size() == 2 && valueVariable != null) {
+                //                if (foreach.collection.type.tag == TypeTags.MAP) {
                 // Create a new assignment statement - value = rec.value;
-                BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos, valueVariable.symbol);
-                BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos, "value");
-                rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef, valueIdentifier);
-                rhs.symbol = new BVarSymbol(0, names.fromString("value"),
-                        this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
-                rhs.type = foreach.varRefs.get(1).type;
-                BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos, newValueVarRef,
-                        rhs, false);
+                BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos,
+                        valueVariable.symbol);
+
+
+                BLangLiteral index1 = ASTBuilderUtil.createLiteral(foreach.pos, symTable.stringType, "1");
+                rhs = ASTBuilderUtil.createIndexBasesAccessExpr(foreach.pos,
+                        foreach.varRefs.get(0).type, varsym, index1);
+                rhs.expr = fieldAccessExpr;
+
+
+                BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt(foreach.pos,
+                        newValueVarRef, rhs, false);
                 // Add the assignment statement after the previous assignment statement.
                 patternClause.body.getStatements().add(1, valueAssignmentStmt);
+                //                } else {
+                //                    // Create a new assignment statement - value = rec.value;
+                //                    BLangSimpleVarRef newValueVarRef = ASTBuilderUtil.createVariableRef(foreach.pos,
+                //                            valueVariable.symbol);
+                //
+                //                    BLangIdentifier valueIdentifier = ASTBuilderUtil.createIdentifier(foreach.pos,
+                // "value");
+                //                    rhs = ASTBuilderUtil.createFieldAccessExpr(patternVariableVarRef,
+                // valueIdentifier);
+                //                    rhs.symbol = new BVarSymbol(0, names.fromString("value"),
+                //                            this.env.scope.owner.pkgID, returnType, this.env.scope.owner);
+                //                    rhs.type = foreach.varRefs.get(1).type;
+                //                    BLangAssignment valueAssignmentStmt = ASTBuilderUtil.createAssignmentStmt
+                // (foreach.pos,
+                //                            newValueVarRef, rhs, false);
+                //                    // Add the assignment statement after the previous assignment statement.
+                //                    patternClause.body.getStatements().add(1, valueAssignmentStmt);
+                //                }
             }
             // Add the created pattern clause to the list.
             patternClauses.add(patternClause);
