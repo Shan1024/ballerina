@@ -2,30 +2,25 @@ import ballerina/io;
 
 function testMapIterator() {
 
-    //string key;
-    //any value;
-    //
-    //var iterator = getData().iterate();
-    //while (true) {
-    //    match iterator.next() {
-    //        record { (string, any) value; !... } rec => {
-    //
-    //            key = rec.value[0];
-    //            value = rec.value[1];
-    //
-    //            io:print(key + " : ");
-    //            io:println(value);
-    //        }
-    //        () => {
-    //            break;
-    //        }
-    //    }
-    //}
-    //
-    //io:println("done");
+    var iterator = getData().iterate();
+    while (true) {
+        match iterator.next() {
+            record { (string, any) value; !... } rec => {
 
-    foreach key, value in getData() {
-        io:println(key, " : ", value);
+                var t = rec.value;
+
+                io:println(t[0], " : ", t[1]);
+            }
+            () => {
+                break;
+            }
+        }
+    }
+
+    io:println("done");
+
+    foreach value in getData() {
+        io:println(value[0], " : ", value[1]);
     }
 
     io:println("done");

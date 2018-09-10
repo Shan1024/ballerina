@@ -7,14 +7,13 @@ function testJsonIterator() {
         age: 2
     };
 
+
     JsonIterator iterator = data.iterate();
     while (true) {
         match iterator.next() {
             record { (string, any) value; !... } rec => {
-                string key = rec.value[0];
-                any value = rec.value[1];
-
-                io:println(key, " : ", value);
+                var t = rec.value;
+                io:println(t[0], " : ", t[1]);
             }
             () => {
                 break;
@@ -24,8 +23,8 @@ function testJsonIterator() {
 
     io:println("done");
 
-    foreach d in data {
-        io:println(d);
+    foreach value in data {
+        io:println(value[0], " : ", value[1]);
     }
 
     io:println("done");
@@ -36,4 +35,5 @@ function testJsonIterator() {
     //}
     //
     //io:println("done");
+
 }

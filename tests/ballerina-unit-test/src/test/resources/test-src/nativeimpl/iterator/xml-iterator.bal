@@ -10,8 +10,9 @@ function testXmlIterator() {
 
     while (true) {
         match iterator.next() {
-            record { int index; xml value; !... } s => {
-                io:println(s.index, " : ",s.value);
+            record { xml value; !... } rec => {
+                var t = rec.value;
+                io:println(t);
             }
             () => {
                 break;
@@ -23,12 +24,6 @@ function testXmlIterator() {
 
     foreach d in data {
         io:println(d);
-    }
-
-    io:println("done");
-
-    foreach d,e in data {
-        io:println(d," : ",e);
     }
 
     io:println("done");
