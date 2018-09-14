@@ -1,0 +1,22 @@
+jobs:
+- job: macOS
+  pool:
+    vmImage: 'macOS 10.13'
+  cancelTimeoutInMinutes: 120
+  steps:
+  - script: mvn clean install
+    displayName: 'Build Ballerina'
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  cancelTimeoutInMinutes: 120
+  steps:
+  - script: mvn clean install
+    displayName: 'Build Ballerina'
+- job: Windows
+  pool:
+    vmImage: 'VS2017-Win2016'
+  cancelTimeoutInMinutes: 120
+  steps:
+  - script: mvn clean install
+    displayName: 'Build Ballerina'
