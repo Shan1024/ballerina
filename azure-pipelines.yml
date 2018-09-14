@@ -1,0 +1,9 @@
+jobs:
+- job: macOS
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+  - script: brew install maven
+    displayName: 'Install Maven'
+  - script: mvn clean install
+    displayName: 'Build Ballerina'
