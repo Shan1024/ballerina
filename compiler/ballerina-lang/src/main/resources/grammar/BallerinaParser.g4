@@ -618,7 +618,7 @@ expression
     |   recordLiteral                                                       # recordLiteralExpression
     |   xmlLiteral                                                          # xmlLiteralExpression
     |   tableLiteral                                                        # tableLiteralExpression
-    |   stringTemplateLiteral                                               # stringTemplateLiteralExpression
+    |   stringTemplate                                                      # stringTemplateExpression
     |   START? variableReference                                            # variableReferenceExpression
     |   actionInvocation                                                    # actionInvocationExpression
     |   lambdaFunction                                                      # lambdaFunctionExpression
@@ -820,16 +820,6 @@ xmlQualifiedName
     :   (XMLQName QNAME_SEPARATOR)? XMLQName
     |   XMLTagExpressionStart expression ExpressionEnd
     ;
-
-stringTemplateLiteral
-    :   StringTemplateLiteralStart stringTemplateContent? StringTemplateLiteralEnd
-    ;
-
-stringTemplateContent
-    :   (StringTemplateExpressionStart expression ExpressionEnd)+ StringTemplateText?
-    |   StringTemplateText
-    ;
-
 
 anyIdentifierName
     : Identifier
@@ -1085,4 +1075,22 @@ tripleBacktickedBlock
 
 tripleBacktickedContent
     :   TripleBacktickContent
+    ;
+
+stringTemplate
+    :   StringTemplateLiteralStart backtickString StringTemplateLiteralEnd
+    ;
+
+backtickString
+    :   backtickItem* BacktickFinalOneChar?
+    ;
+
+backtickItem
+    :   BacktickOneChar
+    |   BacktickTwoChars
+    |   BacktickFinalOneChar? interpolation
+    ;
+
+interpolation
+    :   InterpolationStart expression InterpolationEnd
     ;

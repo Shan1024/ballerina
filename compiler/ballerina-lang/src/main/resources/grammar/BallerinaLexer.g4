@@ -2,6 +2,7 @@ lexer grammar BallerinaLexer;
 
 @members {
     boolean inTemplate = false;
+    boolean inStringTemplate = false;
     boolean inDeprecatedTemplate = false;
     boolean inSiddhi = false;
     boolean inTableSqlQuery = false;
@@ -141,6 +142,9 @@ COMPENSATION: 'compensation';
 COMPENSATE  : 'compensate' ;
 PRIMARYKEY  : 'primarykey' ;
 
+// We need this before RIGHT_BRACE to identify string template end.
+InterpolationEnd : {inStringTemplate}? RIGHT_BRACE -> popMode;
+
 // Separators
 
 SEMICOLON           : ';' ;
@@ -160,6 +164,8 @@ QUESTION_MARK       : '?' ;
 
 fragment
 HASH                : '#' ;
+
+DOLLAR              : '$' ;
 
 // Arithmetic operators
 
@@ -450,7 +456,7 @@ XMLLiteralStart
     ;
 
 StringTemplateLiteralStart
-    :   TYPE_STRING WS* BACKTICK   { inTemplate = true; } -> pushMode(STRING_TEMPLATE)
+    :   TYPE_STRING WS+ BACKTICK { inStringTemplate = true; } -> pushMode(STRING_TEMPLATE)
     ;
 
 DocumentationLineStart
@@ -959,36 +965,21 @@ DeprecatedValidCharSequence
 mode STRING_TEMPLATE;
 
 StringTemplateLiteralEnd
-    :   '`' { inTemplate = false; }          -> popMode
+    :   '`' { inStringTemplate = false; } -> popMode
     ;
 
-StringTemplateExpressionStart
-    :   StringTemplateText? ExpressionStart            -> pushMode(DEFAULT_MODE)
+BacktickOneChar
+    :   ~[`$]
     ;
 
-// We cannot use "StringTemplateBracesSequence? (StringTemplateStringChar StringTemplateBracesSequence?)*" because it
-// can match an empty string.
-StringTemplateText
-    :   StringTemplateValidCharSequence? (StringTemplateStringChar StringTemplateValidCharSequence?)+
-    |   StringTemplateValidCharSequence (StringTemplateStringChar StringTemplateValidCharSequence?)*
+BacktickTwoChars
+    :   '$' ~[{`$]
     ;
 
-fragment
-StringTemplateStringChar
-    :   ~[`{\\]
-    |   '\\' [`{]
-    |   WS
-    |   StringLiteralEscapedSequence
+BacktickFinalOneChar
+    :   '$'
     ;
 
-fragment
-StringLiteralEscapedSequence
-    :   '\\\\'
-    |   '\\{{'
-    ;
-
-fragment
-StringTemplateValidCharSequence
-    :   '{'
-    |   '\\' ~'\\'
+InterpolationStart
+    :   '$' '{' -> pushMode(DEFAULT_MODE)
     ;
