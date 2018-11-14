@@ -11,52 +11,52 @@ type BinaryInsGenrator object {
     new(builder, lhsTmpName, lhsRef, rhsOp1, rhsOp2) {
     }
 
-    function genAdd() {
+    function genAdd() returns () {
         var addReturn = llvm:LLVMBuildAdd(self.builder, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, addReturn,  self.lhsRef);
     }
 
-    function genDiv() {
+    function genDiv() returns () {
         var ifReturn = llvm:LLVMBuildSDiv(self.builder, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genEqual() {
+    function genEqual() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntEQ, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genGreaterEqual() {
+    function genGreaterEqual() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntSGE, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genGreaterThan() {
+    function genGreaterThan() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntSGT, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genLessEqual() {
+    function genLessEqual() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntSLE, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genLessThan() {
+    function genLessThan() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntSLT, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genMul() {
+    function genMul() returns () {
         var ifReturn = llvm:LLVMBuildMul(self.builder, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genNotEqual() {
+    function genNotEqual() returns () {
         var ifReturn = llvm:LLVMBuildICmp(self.builder, llvm:LLVMIntNE, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }
 
-    function genSub() {
+    function genSub() returns () {
         var ifReturn = llvm:LLVMBuildSub(self.builder, self.rhsOp1, self.rhsOp2,  self.lhsTmpName);
         var loaded = llvm:LLVMBuildStore(self.builder, ifReturn,  self.lhsRef);
     }

@@ -1,17 +1,17 @@
 import ballerina/io;
 import ballerina/bir;
 
-public function main(string... args) {
+public function main(string... args) returns () {
     var (srcFilePath, destFilePath) = parseArgs(args);
     genObjectFileFromChannel(openReadableFile(srcFilePath), destFilePath, true);
 }
 
-function genObjectFile(byte[] birBinary, string destFilePath, boolean dumpLLVMIR) {
+function genObjectFile(byte[] birBinary, string destFilePath, boolean dumpLLVMIR) returns () {
     io:ReadableByteChannel byteChannel = io:createReadableChannel(birBinary);
     genObjectFileFromChannel(byteChannel, destFilePath, dumpLLVMIR);
 }
 
-function genObjectFileFromChannel(io:ReadableByteChannel byteChannel, string destFilePath, boolean dumpLLVMIR) {
+function genObjectFileFromChannel(io:ReadableByteChannel byteChannel, string destFilePath, boolean dumpLLVMIR) returns () {
     bir:ChannelReader reader = new(byteChannel);
     checkValidBirChannel(reader);
     bir:ConstPoolParser cpParser = new(reader);
@@ -29,12 +29,12 @@ function parseArgs(string[] args) returns (string, string) {
     return (untaint args[0], untaint args[1]);
 }
 
-function checkValidBirChannel(bir:ChannelReader reader) {
+function checkValidBirChannel(bir:ChannelReader reader) returns () {
     checkMagic(reader);
     checkVersion(reader);
 }
 
-function checkMagic(bir:ChannelReader reader) {
+function checkMagic(bir:ChannelReader reader) returns () {
     byte[] baloCodeHexSpeak = [0xba, 0x10, 0xc0, 0xde];
     var magic = reader.readByteArray(4);
 
@@ -44,7 +44,7 @@ function checkMagic(bir:ChannelReader reader) {
     }
 }
 
-function checkVersion(bir:ChannelReader reader) {
+function checkVersion(bir:ChannelReader reader) returns () {
     var birVersion = reader.readInt32();
     var supportedBirVersion = 1;
     if (birVersion != 1){

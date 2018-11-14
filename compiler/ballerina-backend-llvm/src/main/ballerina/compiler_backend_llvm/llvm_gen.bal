@@ -4,7 +4,7 @@ import ballerina/bir;
 // TODO: make non-globle
 llvm:LLVMValueRef printfRef;
 
-function genPackage(bir:Package pkg, string targetObjectFilePath, boolean dumpLLVMIR) {
+function genPackage(bir:Package pkg, string targetObjectFilePath, boolean dumpLLVMIR) returns () {
     var mod = createModule(pkg.org, pkg.name, pkg.versionValue);
     genFunctions(mod, pkg.functions);
     optimize(mod);
@@ -19,7 +19,7 @@ function createModule(bir:Name orgName, bir:Name pkgName, bir:Name ver) returns 
     return llvm:LLVMModuleCreateWithName(moduleName);
 }
 
-function genFunctions(llvm:LLVMModuleRef mod, bir:Function[] funcs) {
+function genFunctions(llvm:LLVMModuleRef mod, bir:Function[] funcs) returns () {
     var builder = llvm:LLVMCreateBuilder();
 
     genPrintfDeclration(mod);
@@ -34,7 +34,7 @@ function genFunctions(llvm:LLVMModuleRef mod, bir:Function[] funcs) {
     llvm:LLVMDisposeBuilder(builder);
 }
 
-function createObjectFile(string targetObjectFilePath, llvm:LLVMModuleRef mod) {
+function createObjectFile(string targetObjectFilePath, llvm:LLVMModuleRef mod) returns () {
     var val = trap createTargetMachine();
     // TODO : Verify this logic.
     match val {
@@ -68,7 +68,7 @@ function createTargetMachine() returns llvm:LLVMTargetMachineRef {
     return llvm:LLVMCreateTargetMachine(targetRef, targetTripleBP, cpu, features, 0, 0, 0);
 }
 
-function initAllTargets() {
+function initAllTargets() returns () {
     llvm:LLVMInitializeAllTargetInfos();
     llvm:LLVMInitializeAllTargetMCs();
     llvm:LLVMInitializeAllTargets();
@@ -86,7 +86,7 @@ function mapFuncsToNameAndGenrator(llvm:LLVMModuleRef mod, llvm:LLVMBuilderRef b
     return genrators;
 }
 
-function genPrintfDeclration(llvm:LLVMModuleRef mod) {
+function genPrintfDeclration(llvm:LLVMModuleRef mod) returns () {
     llvm:LLVMTypeRef[] pointer_to_char_type = [llvm:LLVMPointerType(llvm:LLVMInt8Type(), 0)];
     llvm:LLVMTypeRef printfType = llvm:LLVMFunctionType1(llvm:LLVMInt32Type(), pointer_to_char_type, 1, 1);
     printfRef = llvm:LLVMAddFunction(mod, "printf", printfType);
@@ -94,7 +94,7 @@ function genPrintfDeclration(llvm:LLVMModuleRef mod) {
 }
 
 
-function optimize(llvm:LLVMModuleRef mod) {
+function optimize(llvm:LLVMModuleRef mod) returns () {
     var passBuilder = llvm:LLVMPassManagerBuilderCreate();
     llvm:LLVMPassManagerBuilderSetOptLevel(passBuilder, 3);
 
@@ -120,7 +120,7 @@ function genBType(bir:BType bType) returns llvm:LLVMTypeRef {
     }
 }
 
-function appendAllTo(any[] toArr, any[] fromArr) {
+function appendAllTo(any[] toArr, any[] fromArr) returns () {
     int i = toArr.length();
     foreach bI in fromArr{
         toArr[i] = bI;

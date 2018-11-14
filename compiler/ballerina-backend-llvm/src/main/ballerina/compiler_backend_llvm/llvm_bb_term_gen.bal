@@ -11,7 +11,7 @@ type BbTermGenrator object {
     new(builder, bb, bbRef, parent) {
     }
 
-    function genBasicBlockTerminator(map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbGenrators) {
+    function genBasicBlockTerminator(map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbGenrators) returns () {
         llvm:LLVMPositionBuilderAtEnd(self.builder,  self.bbRef);
 
         match self.bb.terminator {
@@ -22,17 +22,17 @@ type BbTermGenrator object {
         }
     }
 
-    function genGoToTerm(bir:GOTO gotoIns, map<BbTermGenrator> bbGenrators) {
+    function genGoToTerm(bir:GOTO gotoIns, map<BbTermGenrator> bbGenrators) returns () {
         var brInsRef = llvm:LLVMBuildBr(self.builder, findBbRefById(bbGenrators, gotoIns.targetBB.id.value));
     }
 
-    function genBranchTerm(bir:Branch brIns, map<BbTermGenrator> bbGenrators) {
+    function genBranchTerm(bir:Branch brIns, map<BbTermGenrator> bbGenrators) returns () {
         var ifTrue = findBbRefById(bbGenrators, brIns.trueBB.id.value);
         var ifFalse = findBbRefById(bbGenrators, brIns.falseBB.id.value);
         var vrInsRef = llvm:LLVMBuildCondBr(self.builder, self.parent.genLoadLocalToTempVar(brIns.op), ifTrue, ifFalse);
     }
 
-    function genCallTerm(bir:Call callIns, map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbGenrators) {
+    function genCallTerm(bir:Call callIns, map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbGenrators) returns () {
         llvm:LLVMValueRef[] args = self.mapOverGenVarLoad(callIns.args);
 
         if (callIns.name.value == "print"){
@@ -58,7 +58,7 @@ type BbTermGenrator object {
         return loaddedVars;
     }
 
-    function genCallToPrintf(llvm:LLVMValueRef[] args, string suffix) {
+    function genCallToPrintf(llvm:LLVMValueRef[] args, string suffix) returns () {
         var argsCount = args.length();
         var printfPatten = stringMul("%ld", argsCount) + suffix;
         var printLnIntPatten = llvm:LLVMBuildGlobalStringPtr(self.builder, printfPatten, "");
@@ -67,7 +67,7 @@ type BbTermGenrator object {
         llvm:LLVMValueRef callReturn = llvm:LLVMBuildCall(self.builder, printfRef, printArgs, printArgs.length(), "");
     }
 
-    function genCallToSamePkgFunc(map<FuncGenrator> funcGenrators, bir:Call callIns, llvm:LLVMValueRef[] args) {
+    function genCallToSamePkgFunc(map<FuncGenrator> funcGenrators, bir:Call callIns, llvm:LLVMValueRef[] args) returns () {
         llvm:LLVMValueRef calleFuncRef = findFuncRefByName(funcGenrators, callIns.name);
         llvm:LLVMValueRef callReturn = llvm:LLVMBuildCall(self.builder, calleFuncRef, args, args.length(), "");
         match callIns.lhsOp {
@@ -82,7 +82,7 @@ type BbTermGenrator object {
 
     }
 
-    function genReturnTerm() {
+    function genReturnTerm() returns () {
         if (self.parent.isVoidFunc()){
             var retValueRef = llvm:LLVMBuildLoad(self.builder, self.parent.getLocalVarRefById("%0"), "retrun_temp");
             var ret = llvm:LLVMBuildRet(self.builder, retValueRef);

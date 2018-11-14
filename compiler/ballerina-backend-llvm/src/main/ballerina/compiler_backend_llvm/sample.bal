@@ -1,6 +1,6 @@
 import ballerina/bir;
 
-function writeSample(string path) {
+function writeSample(string path) returns () {
 
     bir:Package ifSample = {
         functions: [

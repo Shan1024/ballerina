@@ -13,7 +13,7 @@ type FuncGenrator object {
     new(mod, builder, func) {
     }
 
-    function genFunctionDecl() {
+    function genFunctionDecl() returns () {
         var name = self.func.name.value;
         llvm:LLVMTypeRef[] argTypes = self.genFunctionArgTypes(self.func.argsCount);
         var retTypeRef = genBType(self.func.typeValue.retType);
@@ -43,14 +43,14 @@ type FuncGenrator object {
         return argTypes;
     }
 
-    function genFunctionBody(map<FuncGenrator> funcGenrators) {
+    function genFunctionBody(map<FuncGenrator> funcGenrators) returns () {
         self.genLocalVarAllocationBbBody();
         var bbTermGenrators = self.genBbBodies();
         self.genLocalVarAllocationBBTerminator(bbTermGenrators);
         self.genBbTerminators(funcGenrators, bbTermGenrators);
     }
 
-    function genLocalVarAllocationBbBody() {
+    function genLocalVarAllocationBbBody() returns () {
         self.varAllocBB = self.genBbDecl("var_allloc");
         int paramIndex = 0;
         foreach localVar in self.func.localVars{
@@ -83,12 +83,12 @@ type FuncGenrator object {
         return bbTermGenrators;
     }
 
-    function genLocalVarAllocationBBTerminator(map<BbTermGenrator> bbTermGenrators) {
+    function genLocalVarAllocationBBTerminator(map<BbTermGenrator> bbTermGenrators) returns () {
         llvm:LLVMPositionBuilderAtEnd(self.builder, self.varAllocBB);
         var brInsRef = llvm:LLVMBuildBr(self.builder, findBbRefById(bbTermGenrators, "bb0"));
     }
 
-    function genBbTerminators(map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbTermGenrators) {
+    function genBbTerminators(map<FuncGenrator> funcGenrators, map<BbTermGenrator> bbTermGenrators) returns () {
         foreach g in bbTermGenrators {
             g.genBasicBlockTerminator(funcGenrators, bbTermGenrators);
         }
