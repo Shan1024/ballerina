@@ -37,7 +37,7 @@ public type Socket object {
     }
 
     # Initializes a socket.
-    extern function init();
+    extern function init() returns ();
 
     # Binds socket to a local port.
     #
@@ -77,7 +77,7 @@ public type ServerSocket object {
     }
 
     # Initializes a server socket.
-    extern function init();
+    extern function init() returns ();
 
     # Binds socket to a local port.
     #

@@ -38,7 +38,7 @@ public type Client object {
     # security, circuit breaking).
     #
     # + c - The configurations to be used when initializing the endpoint
-    public function init(ClientEndpointConfig c);
+    public function init(ClientEndpointConfig c) returns ();
 
     # Returns the HTTP actions associated with the endpoint.
     #
@@ -214,7 +214,7 @@ public type AuthConfig record {
     !...
 };
 
-function Client.init(ClientEndpointConfig c) {
+function Client.init(ClientEndpointConfig c) returns () {
     boolean httpClientRequired = false;
     string url = c.url;
     if (url.hasSuffix("/")) {

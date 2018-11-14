@@ -61,7 +61,7 @@ public type Response object {
     # Sets the provided `Entity` to the response.
     #
     # + e - The `Entity` to be set to the response
-    public extern function setEntity(mime:Entity e);
+    public extern function setEntity(mime:Entity e) returns ();
 
     # Checks whether the requested header key exists in the header map.
     #
@@ -81,7 +81,7 @@ public type Response object {
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public function addHeader(string headerName, string headerValue);
+    public function addHeader(string headerName, string headerValue) returns ();
 
     # Gets all the header values to which the specified header key maps to.
     #
@@ -95,15 +95,15 @@ public type Response object {
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public function setHeader(string headerName, string headerValue);
+    public function setHeader(string headerName, string headerValue) returns ();
 
     # Removes the specified header from the response.
     #
     # + key - The header name
-    public function removeHeader(string key);
+    public function removeHeader(string key) returns ();
 
     # Removes all the headers from the response.
-    public function removeAllHeaders();
+    public function removeAllHeaders() returns ();
 
     # Gets all the names of the headers of the response.
     #
@@ -113,7 +113,7 @@ public type Response object {
     # Sets the `content-type` header to the response.
     #
     # + contentType - Content type value to be set as the `content-type` header
-    public function setContentType(string contentType);
+    public function setContentType(string contentType) returns ();
 
     # Gets the type of the payload of the response (i.e: the `content-type` header value).
     #
@@ -161,65 +161,65 @@ public type Response object {
     # Sets the `etag` header for the given payload. The ETag is generated using a CRC32 hash function.
     #
     # + payload - The payload for which the ETag should be set
-    public function setETag(json|xml|string|byte[] payload);
+    public function setETag(json|xml|string|byte[] payload) returns ();
 
     # Sets the current time as the `last-modified` header.
-    public function setLastModified();
+    public function setLastModified() returns ();
 
     # Sets a `json` as the payload.
     #
     # + payload - The `json` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `json`
-    public function setJsonPayload(json payload, string contentType = "application/json");
+    public function setJsonPayload(json payload, string contentType = "application/json") returns ();
 
     # Sets an `xml` as the payload
     #
     # + payload - The `xml` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `xml`
-    public function setXmlPayload(xml payload, string contentType = "application/xml");
+    public function setXmlPayload(xml payload, string contentType = "application/xml") returns ();
 
     # Sets a `string` as the payload.
     #
     # + payload - The `string` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `string`
-    public function setTextPayload(string payload, string contentType = "text/plain");
+    public function setTextPayload(string payload, string contentType = "text/plain") returns ();
 
     # Sets a `byte[]` as the payload.
     #
     # + payload - The `byte[]` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `byte[]`
-    public function setBinaryPayload(byte[] payload, string contentType = "application/octet-stream");
+    public function setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") returns ();
 
     # Set multiparts as the payload.
     #
     # + bodyParts - The entities which make up the message body
     # + contentType - The content type of the top level message. Set this to override the default
     #                 `content-type` header value
-    public function setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data");
+    public function setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") returns ();
 
     # Sets the content of the specified file as the entity body of the response.
     #
     # + filePath - Path to the file to be set as the payload
     # + contentType - The content type of the specified file. Set this to override the default `content-type`
     #                 header value
-    public function setFileAsPayload(string filePath, string contentType = "application/octet-stream");
+    public function setFileAsPayload(string filePath, string contentType = "application/octet-stream") returns ();
 
     # Sets a `ByteChannel` as the payload.
     #
     # + payload - A `ByteChannel` through which the message payload can be read
     # + contentType - The content type of the payload. Set this to override the default `content-type`
     #                 header value
-    public function setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream");
+    public function setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") returns ();
 
     # Sets the response payload.
     #
     # + payload - Payload can be of type `string`, `xml`, `json`, `byte[]`, `ByteChannel` or `Entity[]` (i.e: a set
     #             of body parts)
-    public function setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload);
+    public function setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) returns ();
 };
 
 /////////////////////////////////
@@ -236,7 +236,7 @@ function Response.getHeader(string headerName) returns string {
     return entity.getHeader(headerName);
 }
 
-function Response.addHeader(string headerName, string headerValue) {
+function Response.addHeader(string headerName, string headerValue) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.addHeader(headerName, headerValue);
 }
@@ -246,7 +246,7 @@ function Response.getHeaders(string headerName) returns (string[]) {
     return entity.getHeaders(headerName);
 }
 
-function Response.setHeader(string headerName, string headerValue) {
+function Response.setHeader(string headerName, string headerValue) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setHeader(headerName, headerValue);
 
@@ -256,12 +256,12 @@ function Response.setHeader(string headerName, string headerValue) {
     }
 }
 
-function Response.removeHeader(string key) {
+function Response.removeHeader(string key) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.removeHeader(key);
 }
 
-function Response.removeAllHeaders() {
+function Response.removeAllHeaders() returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.removeAllHeaders();
 }
@@ -271,7 +271,7 @@ function Response.getHeaderNames() returns string[] {
     return entity.getHeaderNames();
 }
 
-function Response.setContentType(string contentType) {
+function Response.setContentType(string contentType) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setHeader(mime:CONTENT_TYPE, contentType);
 }
@@ -309,60 +309,60 @@ function Response.getBodyParts() returns mime:Entity[]|error {
     return self.getEntity()!getBodyParts();
 }
 
-function Response.setETag(json|xml|string|byte[] payload) {
+function Response.setETag(json|xml|string|byte[] payload) returns () {
     string etag = crypto:crc32(payload);
     self.setHeader(ETAG, etag);
 }
 
-function Response.setLastModified() {
+function Response.setLastModified() returns () {
     time:Time currentT = time:currentTime();
     string lastModified = currentT.format(time:TIME_FORMAT_RFC_1123);
     self.setHeader(LAST_MODIFIED, lastModified);
 }
 
-function Response.setJsonPayload(json payload, string contentType = "application/json") {
+function Response.setJsonPayload(json payload, string contentType = "application/json") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setJson(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setXmlPayload(xml payload, string contentType = "application/xml") {
+function Response.setXmlPayload(xml payload, string contentType = "application/xml") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setXml(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setTextPayload(string payload, string contentType = "text/plain") {
+function Response.setTextPayload(string payload, string contentType = "text/plain") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setText(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") {
+function Response.setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setByteArray(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") {
+function Response.setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setBodyParts(bodyParts, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setFileAsPayload(string filePath, string contentType = "application/octet-stream") {
+function Response.setFileAsPayload(string filePath, string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setFileAsEntityBody(filePath, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") {
+function Response.setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setByteChannel(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Response.setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) {
+function Response.setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) returns () {
     if (payload is string) {
         self.setTextPayload(payload);
     } else if (payload is xml) {

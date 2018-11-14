@@ -20,7 +20,7 @@ import ballerina/task;
 
 public type Window abstract object {
 
-    public function process(StreamEvent[] streamEvents);
+    public function process(StreamEvent[] streamEvents) returns ();
 
     public function getCandidateEvents(
                         StreamEvent originEvent,
@@ -39,7 +39,7 @@ public type LengthWindow object {
         self.linkedList = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         StreamEvent[] outputEvents = [];
         foreach event in streamEvents {
             if (self.linkedList.getSize() == self.size) {
@@ -125,7 +125,7 @@ public type TimeWindow object {
         self.timerQueue = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         lock {
             foreach event in streamEvents {
@@ -199,7 +199,7 @@ public type TimeWindow object {
         return ();
     }
 
-    public function handleError(error e) {
+    public function handleError(error e) returns () {
         io:println("Error occured", e.reason());
     }
 
@@ -255,7 +255,7 @@ public type LengthBatchWindow object {
         self.expiredEventQueue = ();
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunks = new();
         LinkedList outputStreamEventChunk = new();
         int currentTime = time:currentTime().time;
@@ -379,7 +379,7 @@ public type TimeBatchWindow object {
         return ();
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList outputStreamEvents = new();
         if (self.nextEmitTime == -1) {
             self.nextEmitTime = time:currentTime().time + self.timeInMilliSeconds;
@@ -474,7 +474,7 @@ public type TimeBatchWindow object {
         return events;
     }
 
-    public function handleError(error e) {
+    public function handleError(error e) returns () {
         io:println("Error occured", e.reason());
     }
 };
@@ -496,7 +496,7 @@ public type ExternalTimeWindow object {
         self.expiredEventQueue = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         lock {
             foreach event in streamEvents {
@@ -636,7 +636,7 @@ public type ExternalTimeBatchWindow object {
         return ();
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         foreach event in streamEvents {
             streamEventChunk.addLast(event);
@@ -755,11 +755,11 @@ public type ExternalTimeBatchWindow object {
         return events;
     }
 
-    public function handleError(error e) {
+    public function handleError(error e) returns () {
         io:println("Error occured", e.reason());
     }
 
-    public function cloneAppend(StreamEvent currStreamEvent) {
+    public function cloneAppend(StreamEvent currStreamEvent) returns () {
         StreamEvent clonedEvent = currStreamEvent.clone();
         if (self.replaceTimestampWithBatchEndTime) {
             clonedEvent.data[self.timeStamp] = self.endTime;
@@ -772,7 +772,7 @@ public type ExternalTimeBatchWindow object {
         }
     }
 
-    public function flushToOutputChunk(LinkedList complexEventChunks, int currentTime, boolean preserveCurrentEvents) {
+    public function flushToOutputChunk(LinkedList complexEventChunks, int currentTime, boolean preserveCurrentEvents) returns () {
         LinkedList newEventChunk = new();
         if (self.expiredEventChunk.getFirst() != null) {
             // mark the timestamp for the expiredType event
@@ -834,7 +834,7 @@ public type ExternalTimeBatchWindow object {
     }
 
 
-    public function appendToOutputChunk(LinkedList complexEventChunks, int currentTime, boolean preserveCurrentEvents) {
+    public function appendToOutputChunk(LinkedList complexEventChunks, int currentTime, boolean preserveCurrentEvents) returns () {
         LinkedList newEventChunk = new();
         LinkedList sentEventChunk = new();
         if (self.currentEventChunk.getFirst() != null) {
@@ -908,7 +908,7 @@ public type ExternalTimeBatchWindow object {
         return (currentTime + (timeToKeep_ - elapsedTimeSinceLastEmit));
     }
 
-    public function initTiming(StreamEvent firstStreamEvent) {
+    public function initTiming(StreamEvent firstStreamEvent) returns () {
         if (self.endTime < 0) {
             if (self.isStartTimeEnabled) {
                 self.endTime = self.startTime + self.timeToKeep;
@@ -957,7 +957,7 @@ public type TimeLengthWindow object {
         self.expiredEventChunk = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         foreach event in streamEvents {
             streamEventChunk.addLast(event);
@@ -1068,7 +1068,7 @@ public type TimeLengthWindow object {
         return events;
     }
 
-    public function handleError(error e) {
+    public function handleError(error e) returns () {
         io:println("Error occured", e.reason());
     }
 
@@ -1093,7 +1093,7 @@ public type UniqueLengthWindow object {
         self.expiredEventChunk = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         foreach event in streamEvents {
             streamEventChunk.addLast(event);
@@ -1218,7 +1218,7 @@ public type DelayWindow object {
         self.delayedEventQueue = new;
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         LinkedList streamEventChunk = new;
         foreach event in streamEvents {
             streamEventChunk.addLast(event);
@@ -1291,7 +1291,7 @@ public type DelayWindow object {
         return ();
     }
 
-    public function handleError(error e) {
+    public function handleError(error e) returns () {
         io:println("Error occurred", e.reason());
     }
 

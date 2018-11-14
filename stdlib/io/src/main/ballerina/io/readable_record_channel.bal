@@ -37,7 +37,7 @@ public type ReadableTextRecordChannel object {
     # + recordSeparator - Record separator which will separate between records
     # + fmt - Format which will be used to represent the type of record i.e csv
     extern function init(ReadableCharacterChannel characterChannel,
-                         string fieldSeparator, string recordSeparator, string fmt);
+                         string fieldSeparator, string recordSeparator, string fmt) returns ();
 
     # Checks whether there's a record left to be read.
     #

@@ -77,7 +77,7 @@ public type JWTAuthProvider object {
         return ();
     }
 
-    function addToAuthenticationCache(string jwtToken, int exp, internal:JwtPayload payload) {
+    function addToAuthenticationCache(string jwtToken, int exp, internal:JwtPayload payload) returns () {
         CachedJWTAuthContext cachedContext = {};
         cachedContext.jwtPayload = payload;
         cachedContext.expiryTime = exp;
@@ -85,7 +85,7 @@ public type JWTAuthProvider object {
         log:printDebug("Add authenticated user :" + payload.sub + " to the cache");
     }
 
-    function setAuthContext(internal:JwtPayload jwtPayload, string jwtToken) {
+    function setAuthContext(internal:JwtPayload jwtPayload, string jwtToken) returns () {
         runtime:UserPrincipal userPrincipal = runtime:getInvocationContext().userPrincipal;
         userPrincipal.userId = jwtPayload.sub;
         // By default set sub as username.

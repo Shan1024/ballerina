@@ -30,7 +30,7 @@ public type SimpleTopicPublisher object {
     # Initialize SimpleTopicPublisher endpoint
     #
     # + c - Configurations related to SimpleTopicPublisher endpoint
-    public function init(SimpleTopicPublisherEndpointConfiguration c) {
+    public function init(SimpleTopicPublisherEndpointConfiguration c) returns () {
         endpoint jms:SimpleTopicPublisher ep {
             initialContextFactory:"bmbInitialContextFactory",
             providerUrl:getConnectionUrl(c),
@@ -47,12 +47,12 @@ public type SimpleTopicPublisher object {
     # Registers the endpoint in the service.
     # This method is generally not used since SimpleTopicPublisher is a non-service endpoint.
     # + serviceType - type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Start simple topic pubilsher endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -70,7 +70,7 @@ public type SimpleTopicPublisher object {
     }
 
     # Stop simple topic pubilsher endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 

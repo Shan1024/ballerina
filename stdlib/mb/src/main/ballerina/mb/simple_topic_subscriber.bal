@@ -29,7 +29,7 @@ public type SimpleTopicSubscriber object {
     # Initialize simple topic subscriber
     #
     # + c - Simple topic subscrirber enpoint configuration
-    public function init(SimpleTopicSubscriberEndpointConfiguration c) {
+    public function init(SimpleTopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         self.subscriber.init({
                 initialContextFactory:"bmbInitialContextFactory",
@@ -47,12 +47,12 @@ public type SimpleTopicSubscriber object {
     # Register simple topic subscriber endpoint
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.subscriber.register(serviceType);
     }
 
     # Start simple topic subscriber endpoint
-    public function start() {
+    public function start() returns () {
         self.subscriber.start();
     }
 
@@ -70,7 +70,7 @@ public type SimpleTopicSubscriber object {
     }
 
     # Stop simple topic subscriber endpoint
-    public function stop() {
+    public function stop() returns () {
         self.subscriber.stop();
     }
 

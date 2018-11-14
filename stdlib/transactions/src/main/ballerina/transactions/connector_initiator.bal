@@ -28,7 +28,7 @@ type InitiatorClientConfig record {
 type InitiatorClientEP object {
     http:Client httpClient;
 
-    function init(InitiatorClientConfig conf) {
+    function init(InitiatorClientConfig conf) returns () {
         endpoint http:Client httpEP {
             url:conf.registerAtURL,
             timeoutMillis:conf.timeoutMillis,

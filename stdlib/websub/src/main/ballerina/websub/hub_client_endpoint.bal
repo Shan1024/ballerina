@@ -32,7 +32,7 @@ public type Client object {
     # Called when the endpoint is being initialized during module initialization.
     #
     # + c - The configuration for the endpoint
-    public function init(HubClientEndpointConfig c) {
+    public function init(HubClientEndpointConfig c) returns () {
         endpoint http:Client ep {
             url: c.url,
             secureSocket: c.clientSecureSocket,

@@ -28,7 +28,7 @@ public type TopicSubscriber object {
     # Initialize topic subscriber endpoint
     #
     # + c - Topic subscriber configuration
-    public function init(TopicSubscriberEndpointConfiguration c) {
+    public function init(TopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         self.consumerActions.topicSubscriber = self;
         match (c.session) {
@@ -48,16 +48,16 @@ public type TopicSubscriber object {
     # Register topic subscriber endpoint
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.registerListener(serviceType, self.consumerActions);
     }
 
-    extern function registerListener(typedesc serviceType, TopicSubscriberActions actions);
+    extern function registerListener(typedesc serviceType, TopicSubscriberActions actions) returns ();
 
-    extern function createSubscriber(Session session, string messageSelector, Destination? destination = ());
+    extern function createSubscriber(Session session, string messageSelector, Destination? destination = ()) returns ();
 
     # Start topic subscriber endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -69,11 +69,11 @@ public type TopicSubscriber object {
     }
 
     # Stop topic subscriber endpoint
-    public function stop() {
+    public function stop() returns () {
         self.closeSubscriber(self.consumerActions);
     }
 
-    extern function closeSubscriber(TopicSubscriberActions actions);
+    extern function closeSubscriber(TopicSubscriberActions actions) returns ();
 };
 
 # Configuration related to topic subscriber endpoint
@@ -138,7 +138,7 @@ function TopicSubscriberActions.receiveFrom(Destination destination, int timeout
     return result;
 }
 
-function validateTopic(Destination destination) {
+function validateTopic(Destination destination) returns () {
     if (destination.destinationName == "") {
         string errorMessage = "Destination name cannot be empty";
         map errorDetail = { message: errorMessage };

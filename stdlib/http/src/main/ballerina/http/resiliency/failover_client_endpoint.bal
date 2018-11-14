@@ -29,7 +29,7 @@ public type FailoverClient object {
     # Initializes the endpoint using the configurations provided.
     #
     # + foClientConfig - The configurations to be used when initializing the endpoint
-    public function init(FailoverClientEndpointConfiguration foClientConfig);
+    public function init(FailoverClientEndpointConfiguration foClientConfig) returns ();
 
     # Returns the HTTP failover actions associated with the endpoint.
     #
@@ -77,7 +77,7 @@ public type FailoverClientEndpointConfiguration record {
     !...
 };
 
-function FailoverClient.init(FailoverClientEndpointConfiguration foClientConfig) {
+function FailoverClient.init(FailoverClientEndpointConfiguration foClientConfig) returns () {
     self.httpEP.httpClient = createFailOverClient(foClientConfig);
     self.httpEP.config.circuitBreaker = foClientConfig.circuitBreaker;
     self.httpEP.config.timeoutMillis = foClientConfig.timeoutMillis;

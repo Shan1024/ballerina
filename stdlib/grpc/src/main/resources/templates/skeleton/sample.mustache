@@ -1,7 +1,7 @@
 import ballerina/grpc;
 import ballerina/io;
 
-public function main (string... args) {
+public function main (string... args) returns () {
      endpoint {{serviceName}}Client ep {
         url:"http://localhost:9090"
      };

@@ -164,7 +164,7 @@ public type LoadBalancerActions object {
     # The rejectPromise implementation of the LoadBalancer Connector.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise);
+    public function rejectPromise(PushPromise promise) returns ();
 
 };
 
@@ -259,7 +259,7 @@ function LoadBalancerActions.getPromisedResponse(PushPromise promise) returns Re
     return err;
 }
 
-function LoadBalancerActions.rejectPromise(PushPromise promise) {
+function LoadBalancerActions.rejectPromise(PushPromise promise) returns () {
 }
 
 // Performs execute action of the Load Balance connector. extract the corresponding http integer value representation

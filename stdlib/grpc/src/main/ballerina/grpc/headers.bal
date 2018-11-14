@@ -40,19 +40,19 @@ public type Headers object {
     #
     # + headerName - The header name.
     # + headerValue - The header value.
-    public extern function setEntry(string headerName, string headerValue);
+    public extern function setEntry(string headerName, string headerValue) returns ();
 
     # Adds the specified key/value pair as an HTTP header to the request.
     #
     # + headerName - The header name.
     # + headerValue - The header value.
-    public extern function addEntry(string headerName, string headerValue);
+    public extern function addEntry(string headerName, string headerValue) returns ();
 
     # Removes a transport header from the request.
     #
     # + headerName - The header name.
-    public extern function remove(string headerName);
+    public extern function remove(string headerName) returns ();
 
     # Removes all transport headers from the message.
-    public extern function removeAll();
+    public extern function removeAll() returns ();
 };

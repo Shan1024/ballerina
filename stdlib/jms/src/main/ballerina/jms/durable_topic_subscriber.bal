@@ -28,7 +28,7 @@ public type DurableTopicSubscriber object {
     # Initialize durable topic subscriber endpoint
     #
     # + c - Configurations for a durable topic subscriber
-    public function init(DurableTopicSubscriberEndpointConfiguration c) {
+    public function init(DurableTopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         match (c.session) {
             Session s => {
@@ -42,16 +42,16 @@ public type DurableTopicSubscriber object {
     # Binds the durable topic subscriber endpoint to a service
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.registerListener(serviceType, self.consumerActions);
     }
 
-    extern function registerListener(typedesc serviceType, DurableTopicSubscriberActions actions);
+    extern function registerListener(typedesc serviceType, DurableTopicSubscriberActions actions) returns ();
 
-    extern function createSubscriber(Session session, string messageSelector);
+    extern function createSubscriber(Session session, string messageSelector) returns ();
 
-    # Starts the endpoint. Function is ignored by the subscriber endpoint
-    public function start() {
+    # Starts the endpoint. function is ignored by the subscriber endpoint
+    public function start() returns () {
     }
 
     # Return the subscrber caller actions
@@ -62,11 +62,11 @@ public type DurableTopicSubscriber object {
     }
 
     # Ends consuming messages from the durable topic subscriber endpoint
-    public function stop() {
+    public function stop() returns () {
         self.closeSubscriber(self.consumerActions);
     }
 
-    extern function closeSubscriber(DurableTopicSubscriberActions actions);
+    extern function closeSubscriber(DurableTopicSubscriberActions actions) returns ();
 };
 
 # Configurations related to the durable topic subscriber endpoint

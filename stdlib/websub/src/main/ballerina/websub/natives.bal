@@ -40,7 +40,7 @@ extern function stopHubService(string hubUrl) returns boolean;
 # Adds a new subscription for the specified topic in the Ballerina Hub.
 #
 # + subscriptionDetails - The details of the subscription including WebSub specifics
-extern function addSubscription(SubscriptionDetails subscriptionDetails);
+extern function addSubscription(SubscriptionDetails subscriptionDetails) returns ();
 
 # Publishes an update against the topic in the Ballerina Hub.
 #
@@ -53,7 +53,7 @@ extern function publishToInternalHub(string topic, WebSubContent content) return
 #
 # + topic - The topic for which the subscription was added
 # + callback - The callback registered for this subscription
-extern function removeSubscription(string topic, string callback);
+extern function removeSubscription(string topic, string callback) returns ();
 
 # Registers a topic in the Ballerina Hub.
 #

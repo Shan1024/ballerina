@@ -59,7 +59,7 @@ public type HttpAuthzHandler object {
     #
     # + authzCacheKey - Cache key
     # + authorized - boolean flag to indicate the authorization decision
-    function cacheAuthzResult (string authzCacheKey, boolean authorized);
+    function cacheAuthzResult (string authzCacheKey, boolean authorized) returns ();
 };
 
 function HttpAuthzHandler.handle (string username, string serviceName, string resourceName, string method,
@@ -134,7 +134,7 @@ function HttpAuthzHandler.authorizeFromCache(string authzCacheKey) returns (bool
     return ();
 }
 
-function HttpAuthzHandler.cacheAuthzResult (string authzCacheKey, boolean authorized) {
+function HttpAuthzHandler.cacheAuthzResult (string authzCacheKey, boolean authorized) returns () {
     if (authorized) {
         var cache = self.positiveAuthzCache;
         if (cache is cache:Cache) {

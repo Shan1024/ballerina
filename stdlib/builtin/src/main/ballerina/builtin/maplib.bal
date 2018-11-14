@@ -31,7 +31,7 @@ public extern function map.keys() returns (string[]);
 public extern function map.hasKey(string key) returns (boolean);
 
 # Clear the items from given map.
-public extern function map.clear();
+public extern function map.clear() returns ();
 
 # Returns an array of values contained in the specified map.
 #

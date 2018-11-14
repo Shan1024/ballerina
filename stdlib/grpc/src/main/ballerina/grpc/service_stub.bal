@@ -27,7 +27,8 @@ public type Stub object {
     # + stubType - Service Stub type. possible values: blocking, nonblocking.
     # + descriptorKey - Proto descriptor key. Key of proto descriptor.
     # + descriptorMap - Proto descriptor map. descriptor map with all dependent descriptors.
-    public extern function initStub(any clientEndpoint, string stubType, string descriptorKey, map descriptorMap);
+    public extern function initStub(any clientEndpoint, string stubType, string descriptorKey,
+                                    map descriptorMap) returns ();
 
     # Calls when executing blocking call with gRPC service.
     #

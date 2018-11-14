@@ -34,7 +34,7 @@ public type WritableDataChannel object {
     #
     # + byteChannel - channel which would represent the source to read/write data
     # + bOrder - network byte order
-    extern function init(WritableByteChannel byteChannel, ByteOrder bOrder);
+    extern function init(WritableByteChannel byteChannel, ByteOrder bOrder) returns ();
 
     # Writes 16 bit integer.
     #

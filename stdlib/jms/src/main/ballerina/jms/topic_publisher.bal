@@ -32,7 +32,7 @@ public type TopicPublisher object {
     # Initialize topic publisher endpoint
     #
     # + c - Topic publisher endpoint configuration
-    public function init(TopicPublisherEndpointConfiguration c) {
+    public function init(TopicPublisherEndpointConfiguration c) returns () {
         self.config = c;
         self.producerActions.topicPublisher = self;
         match (c.session) {
@@ -48,17 +48,17 @@ public type TopicPublisher object {
         }
     }
 
-    public extern function initTopicPublisher(Session session, Destination? destination = ());
+    public extern function initTopicPublisher(Session session, Destination? destination = ()) returns ();
 
     # Register topic publisher endpoint
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Start topic publisher endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -69,7 +69,7 @@ public type TopicPublisher object {
     }
 
     # Stop topic publisher endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 };

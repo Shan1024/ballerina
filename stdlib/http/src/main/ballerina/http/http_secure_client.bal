@@ -282,7 +282,7 @@ public type HttpSecureClient object {
     # This just pass the request to actual network call.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise) {
+    public function rejectPromise(PushPromise promise) returns () {
         return self.httpClient.rejectPromise(promise);
     }
 };

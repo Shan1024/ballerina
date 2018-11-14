@@ -32,7 +32,7 @@ public type WritableCharacterChannel object {
     #
     # + byteChannel - WritableByteChannel which should be used to initalize the character channel
     # + cs - Character-set (i.e UTF-8) which should be used to encode
-    extern function init(WritableByteChannel byteChannel, string cs);
+    extern function init(WritableByteChannel byteChannel, string cs) returns ();
 
     # Writes a given sequence of characters (string).
     #

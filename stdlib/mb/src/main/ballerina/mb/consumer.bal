@@ -28,19 +28,19 @@ public type ConsumerTemplate object {
     public ConsumerActions callerActions;
     public ConsumerEndpointConfiguration config;
 
-    public function init(ConsumerEndpointConfiguration c) {
+    public function init(ConsumerEndpointConfiguration c) returns () {
 
     }
 
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
-    public function start() {
+    public function start() returns () {
 
     }
 
-    public function stop() {
+    public function stop() returns () {
 
     }
 

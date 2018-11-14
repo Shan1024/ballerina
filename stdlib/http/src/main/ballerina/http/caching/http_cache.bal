@@ -38,7 +38,7 @@ public type HttpCache object {
         return true;
     }
 
-    function put (string key, RequestCacheControl? requestCacheControl, Response inboundResponse) {
+    function put (string key, RequestCacheControl? requestCacheControl, Response inboundResponse) returns () {
         ResponseCacheControl? respCacheControl = inboundResponse.cacheControl;
 
         if ((respCacheControl.noStore ?: false) ||
@@ -129,7 +129,7 @@ public type HttpCache object {
         return matchingResponses;
     }
 
-    function remove (string key) {
+    function remove (string key) returns () {
         self.cache.remove(key);
     }
 };
@@ -154,7 +154,7 @@ function isCacheableStatusCode (int statusCode) returns boolean {
            statusCode == NOT_IMPLEMENTED_501;
 }
 
-function addEntry (cache:Cache cache, string key, Response inboundResponse) {
+function addEntry (cache:Cache cache, string key, Response inboundResponse) returns () {
     var existingResponses = cache.get(key);
     if (existingResponses is Response[]) {
         existingResponses[existingResponses.length()] = inboundResponse;

@@ -178,7 +178,7 @@ public type RetryClient object {
 	# When a `PushPromise` is rejected, there is no chance of fetching a promised response using the rejected promise.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise);
+    public function rejectPromise(PushPromise promise) returns ();
 };
 
 function RetryClient.post(string path, Request|string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[]|()
@@ -255,7 +255,7 @@ function RetryClient.getPromisedResponse(PushPromise promise) returns Response|e
     return self.httpClient.getPromisedResponse(promise);
 }
 
-function RetryClient.rejectPromise(PushPromise promise) {
+function RetryClient.rejectPromise(PushPromise promise) returns () {
     return self.httpClient.rejectPromise(promise);
 }
 

@@ -30,7 +30,7 @@ public type SimpleTopicPublisher object {
     # Initialize simple topic publisher endpoint
     #
     # + c - Simple topic publisher enpoint configuration
-    public function init(SimpleTopicPublisherEndpointConfiguration c) {
+    public function init(SimpleTopicPublisherEndpointConfiguration c) returns () {
         self.config = c;
         Connection conn = new({
                 initialContextFactory: self.config.initialContextFactory,
@@ -57,12 +57,12 @@ public type SimpleTopicPublisher object {
     # Register simple topic publisher endpoint
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Start simple topic pubilsher endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -82,7 +82,7 @@ public type SimpleTopicPublisher object {
     }
 
     # Stop simple topic pubilsher endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 

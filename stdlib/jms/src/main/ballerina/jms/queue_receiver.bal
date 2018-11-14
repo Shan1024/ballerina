@@ -28,7 +28,7 @@ public type QueueReceiver object {
     # Initializes the QueueReceiver endpoint
     #
     # + c - Configurations related to the QueueReceiver endpoint
-    public function init(QueueReceiverEndpointConfiguration c) {
+    public function init(QueueReceiverEndpointConfiguration c) returns () {
         self.config = c;
         self.consumerActions.queueReceiver = self;
         match (c.session) {
@@ -48,16 +48,16 @@ public type QueueReceiver object {
     # Binds the queue receiver endpoint to a service
     #
     # + serviceType - type descriptor of the service to bind to
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.registerListener(serviceType, self.consumerActions);
     }
 
-    extern function registerListener(typedesc serviceType, QueueReceiverActions actions);
+    extern function registerListener(typedesc serviceType, QueueReceiverActions actions) returns ();
 
-    extern function createQueueReceiver(Session session, string messageSelector, Destination? destination = ());
+    extern function createQueueReceiver(Session session, string messageSelector, Destination? destination = ()) returns ();
 
     # Starts the endpoint. Function is ignored by the receiver endpoint
-    public function start() {
+    public function start() returns () {
         // Ignore
     }
 
@@ -69,11 +69,11 @@ public type QueueReceiver object {
     }
 
     # Stops consuming messages through QueueReceiver endpoint
-    public function stop() {
+    public function stop() returns () {
         self.closeQueueReceiver(self.consumerActions);
     }
 
-    extern function closeQueueReceiver(QueueReceiverActions actions);
+    extern function closeQueueReceiver(QueueReceiverActions actions) returns ();
 };
 
 # Configurations related to the QueueReceiver endpoint
@@ -138,7 +138,7 @@ function QueueReceiverActions.receiveFrom(Destination destination, int timeoutIn
     return result;
 }
 
-function validateQueue(Destination destination) {
+function validateQueue(Destination destination) returns () {
     if (destination.destinationName == "") {
         string errorMessage = "Destination name cannot be empty";
         map errorDetail = { message: errorMessage };

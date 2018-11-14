@@ -213,7 +213,7 @@ public type ResponseCacheControl object {
     }
 };
 
-function Request.parseCacheControlHeader () {
+function Request.parseCacheControlHeader () returns () {
     // If the request doesn't contain a cache-control header, resort to default cache control settings
     if (!self.hasHeader(CACHE_CONTROL)) {
         return;
@@ -282,7 +282,7 @@ function getExpirationDirectiveValue (string directive) returns int {
     return -1; // Disregarding the directive if the value cannot be parsed
 }
 
-function setRequestCacheControlHeader(Request request) {
+function setRequestCacheControlHeader(Request request) returns () {
     var requestCacheControl = request.cacheControl;
     if (requestCacheControl is RequestCacheControl) {
         if (!request.hasHeader(CACHE_CONTROL)) {
@@ -291,7 +291,7 @@ function setRequestCacheControlHeader(Request request) {
     }
 }
 
-function setResponseCacheControlHeader(Response response) {
+function setResponseCacheControlHeader(Response response) returns () {
     var responseCacheControl = response.cacheControl;
     if (responseCacheControl is ResponseCacheControl) {
         if (!response.hasHeader(CACHE_CONTROL)) {

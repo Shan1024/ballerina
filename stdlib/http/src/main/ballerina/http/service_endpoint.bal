@@ -36,17 +36,17 @@ public type Listener object {
     # Gets invoked during module initialization to initialize the endpoint.
     #
     # + c - Configurations for HTTP service endpoints
-    public function init(ServiceEndpointConfiguration c);
+    public function init(ServiceEndpointConfiguration c) returns ();
 
     public extern function initEndpoint() returns error?;
 
     # Gets invoked when binding a service to the endpoint.
     #
     # + serviceType - The type of the service to be registered
-    public extern function register(typedesc serviceType);
+    public extern function register(typedesc serviceType) returns ();
 
     # Starts the registered service.
-    public extern function start();
+    public extern function start() returns ();
 
     # Returns the connector that client code uses.
     #
@@ -54,7 +54,7 @@ public type Listener object {
     public extern function getCallerActions() returns (Connection);
 
     # Stops the registered service.
-    public extern function stop();
+    public extern function stop() returns ();
 };
 
 # Presents a read-only view of the remote address.
@@ -163,7 +163,7 @@ public type KeepAlive "AUTO"|"ALWAYS"|"NEVER";
 # Closes the connection irrespective of the `connection` header value }
 @final public KeepAlive KEEPALIVE_NEVER = "NEVER";
 
-function Listener.init (ServiceEndpointConfiguration c) {
+function Listener.init (ServiceEndpointConfiguration c) returns () {
     self.config = c;
     var err = self.initEndpoint();
     if (err is error) {
@@ -199,7 +199,7 @@ public type WebSocketListener object {
     # Gets invoked during module initialization to initialize the endpoint.
     #
     # + c - The `ServiceEndpointConfiguration` of the endpoint
-    public function init(ServiceEndpointConfiguration c) {
+    public function init(ServiceEndpointConfiguration c) returns () {
         self.config = c;
         self.httpEndpoint.init(c);
     }
@@ -207,12 +207,12 @@ public type WebSocketListener object {
     # Gets invoked when binding a service to the endpoint.
     #
     # + serviceType - The service type
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.httpEndpoint.register(serviceType);
     }
 
     # Starts the registered service.
-    public function start() {
+    public function start() returns () {
         self.httpEndpoint.start();
     }
 
@@ -224,7 +224,7 @@ public type WebSocketListener object {
     }
 
     # Stops the registered service.
-    public function stop() {
+    public function stop() returns () {
         WebSocketConnector webSocketConnector = self.getCallerActions();
         check webSocketConnector.close(statusCode = 1001, reason = "going away", timeoutInSecs = 0);
         self.httpEndpoint.stop();

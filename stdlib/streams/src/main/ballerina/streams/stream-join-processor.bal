@@ -34,7 +34,7 @@ public type StreamJoinProcessor object {
         self.unidirectionalStream = ();
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         StreamEvent?[] joinedEvents = [];
         int i = 0;
         foreach event in streamEvents {
@@ -117,17 +117,17 @@ public type StreamJoinProcessor object {
         self.nextProcessor(outputEvents);
     }
 
-    public function setLHS(string streamName, Window windowInstance) {
+    public function setLHS(string streamName, Window windowInstance) returns () {
         self.lhsStream = streamName;
         self.lhsWindow = windowInstance;
     }
 
-    public function setRHS(string streamName, Window windowInstance) {
+    public function setRHS(string streamName, Window windowInstance) returns () {
         self.rhsStream = streamName;
         self.rhsWindow = windowInstance;
     }
 
-    public function setUnidirectionalStream(string streamName) {
+    public function setUnidirectionalStream(string streamName) returns () {
         self.unidirectionalStream = streamName;
     }
 

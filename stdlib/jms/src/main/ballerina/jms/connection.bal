@@ -26,15 +26,15 @@ public type Connection object {
         self.createConnection();
     }
 
-    extern function createConnection();
+    extern function createConnection() returns ();
 
     # Starts (or restarts) a connection's delivery of incoming messages.
     # A call to start on a connection that has already been started is ignored.
-    public extern function start();
+    public extern function start() returns ();
 
     # Temporarily stops a connection's delivery of incoming messages.
     # Delivery can be restarted using the connection's start method.
-    public extern function stop();
+    public extern function stop() returns ();
 };
 
 # Configurations related to a JMS connection

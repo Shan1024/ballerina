@@ -16,7 +16,7 @@
 
 # Releases the database connection. If the table data is fully iterated, it will be automatically closed. This explicit
 # close is required only if it is not fully iterated.
-public extern function table.close();
+public extern function table.close() returns ();
 
 # Checks for a new row in the given table. If a new row is found, moves the cursor to it.
 #

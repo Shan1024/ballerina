@@ -141,7 +141,7 @@ public type Entity object {
     # Sets the content-type to entity.
     #
     # + mediaType - Content type that needs to be set to the entity
-    public function setContentType(@sensitive string mediaType) {
+    public function setContentType(@sensitive string mediaType) returns () {
         self.cType = check getMediaType(mediaType);
         self.setHeader(CONTENT_TYPE, mediaType);
     }
@@ -160,7 +160,7 @@ public type Entity object {
     # Sets the content ID of the entity.
     #
     # + contentId - Content ID that needs to be set to entity
-    public function setContentId(@sensitive string contentId) {
+    public function setContentId(@sensitive string contentId) returns () {
         self.cId = contentId;
         self.setHeader(CONTENT_ID, contentId);
     }
@@ -179,7 +179,7 @@ public type Entity object {
     # Sets the content length of the entity.
     #
     # + contentLength - Content length that needs to be set to entity
-    public function setContentLength(@sensitive int contentLength) {
+    public function setContentLength(@sensitive int contentLength) returns () {
         self.cLength = contentLength;
         var contentLengthStr = <string>contentLength;
         self.setHeader(CONTENT_LENGTH, contentLengthStr);
@@ -203,7 +203,7 @@ public type Entity object {
     # Sets the content disposition of the entity.
     #
     # + contentDisposition - Content disposition that needs to be set to entity
-    public function setContentDisposition(ContentDisposition contentDisposition) {
+    public function setContentDisposition(ContentDisposition contentDisposition) returns () {
         self.cDisposition = contentDisposition;
         self.setHeader(CONTENT_DISPOSITION, contentDisposition.toString());
     }
@@ -222,7 +222,7 @@ public type Entity object {
     # Sets the entity body with the given content.
     #
     # + entityBody - Entity body can be of type `string`,`xml`,`json`,`byte[]`,`io:ReadableByteChannel` or `Entity[]`
-    public function setBody(@sensitive string|xml|json|byte[]|io:ReadableByteChannel|Entity[] entityBody);
+    public function setBody(@sensitive string|xml|json|byte[]|io:ReadableByteChannel|Entity[] entityBody) returns ();
 
     # Sets the entity body with a given file. This method overrides any existing `content-type` headers
     # with the default content type `application/octet-stream`. The default value `application/octet-stream`
@@ -231,7 +231,7 @@ public type Entity object {
     # + filePath - Represents the path to the file
     # + contentType - Content type to be used with the payload. This is an optional parameter.
     #                 `application/octet-stream` is used as the default value.
-    public function setFileAsEntityBody(@sensitive string filePath, string contentType = "application/octet-stream");
+    public function setFileAsEntityBody(@sensitive string filePath, string contentType = "application/octet-stream") returns ();
 
     # Sets the entity body with the given `json` content. This method overrides any existing `content-type` headers
     # with the default content type `application/json`. The default value `application/json` can be overridden
@@ -240,7 +240,7 @@ public type Entity object {
     # + jsonContent - JSON content that needs to be set to entity
     # + contentType - Content type to be used with the payload. This is an optional parameter. `application/json`
     #                 is used as the default value.
-    public extern function setJson(@sensitive json jsonContent, @sensitive string contentType = "application/json");
+    public extern function setJson(@sensitive json jsonContent, @sensitive string contentType = "application/json") returns ();
 
     # Extracts JSON body from the entity. If the entity body is not a JSON, an error is returned.
     #
@@ -255,7 +255,7 @@ public type Entity object {
     # + xmlContent - XML content that needs to be set to entity
     # + contentType - Content type to be used with the payload. This is an optional parameter. `application/xml`
     #                 is used as the default value.
-    public extern function setXml(@sensitive xml xmlContent, @sensitive string contentType = "application/xml");
+    public extern function setXml(@sensitive xml xmlContent, @sensitive string contentType = "application/xml") returns ();
 
     # Extracts `xml` body from the entity. If the entity body is not an XML, an error is returned.
     #
@@ -270,7 +270,7 @@ public type Entity object {
     # + textContent - Text content that needs to be set to entity
     # + contentType - Content type to be used with the payload. This is an optional parameter. `text/plain`
     #                 is used as the default value.
-    public extern function setText(@sensitive string textContent, @sensitive string contentType = "text/plain");
+    public extern function setText(@sensitive string textContent, @sensitive string contentType = "text/plain") returns ();
 
     # Extracts text body from the entity. If the entity body is not text compatible an error is returned.
     #
@@ -292,7 +292,7 @@ public type Entity object {
     # + blobContent - byte[] content that needs to be set to entity
     # + contentType - Content type to be used with the payload. This is an optional parameter.
     #                 `application/octet-stream` is used as the default value.
-    public extern function setByteArray(@sensitive byte[] blobContent, @sensitive string contentType = "application/octet-stream");
+    public extern function setByteArray(@sensitive byte[] blobContent, @sensitive string contentType = "application/octet-stream") returns ();
 
     # Given an entity, gets the entity body as a `byte[]`. If the entity size is considerably large consider
     # using getByteChannel() method instead.
@@ -308,7 +308,7 @@ public type Entity object {
     # + byteChannel - Byte channel that needs to be set to entity
     # + contentType - Content-type to be used with the payload. This is an optional parameter.
     #                 `application/octet-stream` is used as the default value.
-    public extern function setByteChannel(io:ReadableByteChannel byteChannel, @sensitive string contentType = "application/octet-stream");
+    public extern function setByteChannel(io:ReadableByteChannel byteChannel, @sensitive string contentType = "application/octet-stream") returns ();
 
     # Given an entity, gets the entity body as a byte channel.
     #
@@ -333,7 +333,7 @@ public type Entity object {
     # + bodyParts - Represents the body parts that needs to be set to the entity
     # + contentType - Content-type to be used with the payload. This is an optional parameter.
     #                 `multipart/form-data` is used as the default value.
-    public extern function setBodyParts(@sensitive Entity[] bodyParts, @sensitive string contentType = "multipart/form-data");
+    public extern function setBodyParts(@sensitive Entity[] bodyParts, @sensitive string contentType = "multipart/form-data") returns ();
 
     # Gets the header value associated with the given header name.
     #
@@ -359,22 +359,22 @@ public type Entity object {
     #
     # + headerName - The header name
     # + headerValue - Represents the header value to be added
-    public extern function addHeader(@sensitive string headerName, string headerValue);
+    public extern function addHeader(@sensitive string headerName, string headerValue) returns ();
 
     # Sets the given header value against the existing header. If a header already exists, its value is replaced
     # with the given header value.
     #
     # + headerName - The header name
     # + headerValue - Represents the header value
-    public extern function setHeader(@sensitive string headerName, string headerValue);
+    public extern function setHeader(@sensitive string headerName, string headerValue) returns ();
 
     # Removes the given header from the entity.
     #
     # + headerName - Represents the header name
-    public extern function removeHeader(@sensitive string headerName);
+    public extern function removeHeader(@sensitive string headerName) returns ();
 
     # Removes all headers associated with the entity.
-    public extern function removeAllHeaders();
+    public extern function removeAllHeaders() returns ();
 
     # Checks whether the requested header key exists in the header map.
     #
@@ -384,12 +384,12 @@ public type Entity object {
 };
 
 function Entity.setFileAsEntityBody(@sensitive string filePath,
-                                     @sensitive string contentType = "application/octet-stream") {
+                                     @sensitive string contentType = "application/octet-stream") returns () {
     io:ReadableByteChannel byteChannel = io:openReadableFile(filePath);
     self.setByteChannel(byteChannel, contentType = contentType);
 }
 
-function Entity.setBody(@sensitive (string|xml|json|byte[]|io:ReadableByteChannel|Entity[]) entityBody) {
+function Entity.setBody(@sensitive (string|xml|json|byte[]|io:ReadableByteChannel|Entity[]) entityBody) returns () {
     if (entityBody is string) {
         self.setText(entityBody);
     } else if (entityBody is xml) {

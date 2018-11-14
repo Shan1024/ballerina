@@ -26,7 +26,7 @@ public type Select object {
     new(nextProcessorPointer, aggregatorArr, groupbyFunc, selectFunc) {
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         StreamEvent[] outputStreamEvents = [];
         if (self.aggregatorArr.length() > 0) {
             map<StreamEvent> groupedEvents = {};

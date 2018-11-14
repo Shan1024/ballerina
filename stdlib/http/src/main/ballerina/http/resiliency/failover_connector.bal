@@ -183,7 +183,7 @@ public type FailoverActions object {
     # response using the rejected promise.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise);
+    public function rejectPromise(PushPromise promise) returns ();
 };
 
 function FailoverActions.post(string path, Request|string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[]|()
@@ -263,7 +263,7 @@ function FailoverActions.getPromisedResponse(PushPromise promise) returns Respon
     return err;
 }
 
-function FailoverActions.rejectPromise(PushPromise promise) {
+function FailoverActions.rejectPromise(PushPromise promise) returns () {
 }
 
 // Performs execute action of the Failover connector. extract the corresponding http integer value representation
@@ -408,7 +408,7 @@ function populateGenericFailoverActionError (error[] failoverActionErr, error ht
 
 // If leaf endpoint returns a response with status code configured to retry in the failover connector, failover error
 // will be generated with last response status code and generic failover response.
-function populateFailoverErrorHttpStatusCodes (Response inResponse, error[] failoverActionErr, int index) {
+function populateFailoverErrorHttpStatusCodes (Response inResponse, error[] failoverActionErr, int index) returns () {
     string failoverMessage = "Endpoint " + index + " returned response is: " + inResponse.statusCode + " " +
         inResponse.reasonPhrase;
     map errorDetail = { message : failoverMessage };

@@ -22,7 +22,7 @@ public type GroupBy object {
     new (nextProcessorPointer, groupByFields) {
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         if (self.groupByFields.length() > 0) {
             foreach streamEvent in streamEvents {
                 string key = self.generateGroupByKey(streamEvent);

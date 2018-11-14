@@ -24,6 +24,6 @@ public extern function contains(@sensitive string key) returns boolean;
 #
 # + key - The key of the configuration value to be set
 # + value - The configuration value to be set
-public extern function setConfig(string key, string|int|float|boolean value);
+public extern function setConfig(string key, string|int|float|boolean value) returns ();
 
 extern function get(@sensitive string key, ValueType vType) returns string|int|float|boolean|map|any[]|()|error;

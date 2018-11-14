@@ -223,7 +223,7 @@ public type HttpCachingClient object {
     # response using the rejected promise.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise);
+    public function rejectPromise(PushPromise promise) returns ();
 };
 
 # Creates an HTTP client capable of caching HTTP responses.
@@ -367,7 +367,7 @@ function HttpCachingClient.getPromisedResponse(PushPromise promise) returns Resp
     return self.httpClient.getPromisedResponse(promise);
 }
 
-function HttpCachingClient.rejectPromise(PushPromise promise) {
+function HttpCachingClient.rejectPromise(PushPromise promise) returns () {
     self.httpClient.rejectPromise(promise);
 }
 
@@ -538,7 +538,7 @@ function handle304Response(Response validationResponse, Response cachedResponse,
 }
 
 // Based on https://tools.ietf.org/html/rfc7234#section-4.4
-function invalidateResponses(HttpCache httpCache, Response inboundResponse, string path) {
+function invalidateResponses(HttpCache httpCache, Response inboundResponse, string path) returns () {
     // TODO: Improve this logic in accordance with the spec
     if (isCacheableStatusCode(inboundResponse.statusCode) &&
         inboundResponse.statusCode >= 200 && inboundResponse.statusCode < 400) {
@@ -658,7 +658,7 @@ function sendNewRequest(CallerActions httpClient, Request request, string path, 
     }
 }
 
-function setAgeHeader(Response cachedResponse) {
+function setAgeHeader(Response cachedResponse) returns () {
     cachedResponse.setHeader(AGE, "" + calculateCurrentResponseAge(cachedResponse));
 }
 
@@ -682,7 +682,7 @@ function calculateCurrentResponseAge(Response cachedResponse) returns int {
 }
 
 // Based on https://tools.ietf.org/html/rfc7234#section-4.3.4
-function updateResponse(Response cachedResponse, Response validationResponse) {
+function updateResponse(Response cachedResponse, Response validationResponse) returns () {
     // 1 - delete warning headers with warn codes 1xx
     // 2 - retain warning headers with warn codes 2xx
     // 3 - use other headers in validation response to replace corresponding headers in cached response
@@ -707,7 +707,7 @@ function isAStrongValidator(string etag) returns boolean {
 }
 
 // Based on https://tools.ietf.org/html/rfc7234#section-4.3.4
-function replaceHeaders(Response cachedResponse, Response validationResponse) {
+function replaceHeaders(Response cachedResponse, Response validationResponse) returns () {
     string[] headerNames = untaint validationResponse.getHeaderNames();
 
     log:printDebug("Updating response headers using validation response.");
@@ -721,7 +721,7 @@ function replaceHeaders(Response cachedResponse, Response validationResponse) {
     }
 }
 
-function retain2xxWarnings(Response cachedResponse) {
+function retain2xxWarnings(Response cachedResponse) returns () {
     if (cachedResponse.hasHeader(WARNING)) {
         string[] warningHeaders = cachedResponse.getHeaders(WARNING);
         cachedResponse.removeHeader(WARNING);
@@ -750,7 +750,7 @@ function getResponseAge(Response cachedResponse) returns int {
     return 0;
 }
 
-function updateResponseTimestamps(Response response, int requestedTime, int receivedTime) {
+function updateResponseTimestamps(Response response, int requestedTime, int receivedTime) returns () {
     response.requestTime = requestedTime;
     response.receivedTime = receivedTime;
 }

@@ -25,7 +25,7 @@ public type ReadableDataChannel object {
 
     # +byteChannel - channel which would represent the source to read/write data
     # +bOrder - network byte order
-    extern function init(ReadableByteChannel byteChannel, ByteOrder bOrder);
+    extern function init(ReadableByteChannel byteChannel, ByteOrder bOrder) returns ();
 
     #Reads a 16 bit integer.
 

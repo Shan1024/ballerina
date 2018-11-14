@@ -33,7 +33,7 @@ public type QueueSender object {
     # Initialize the consumer endpoint
     #
     # + c - Configurations related to the QueueSender endpoint
-    public function init(QueueSenderEndpointConfiguration c) {
+    public function init(QueueSenderEndpointConfiguration c) returns () {
         self.config = c;
         self.producerActions.queueSender = self;
         match (c.session) {
@@ -49,18 +49,18 @@ public type QueueSender object {
         }
     }
 
-    extern function initQueueSender(Session session, Destination? destination = ());
+    extern function initQueueSender(Session session, Destination? destination = ()) returns ();
 
     # Registers the endpoint in the service.
     # This method is not used since QueueSender is a non-service endpoint.
     #
     # + serviceType - type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Starts the consumer endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -72,7 +72,7 @@ public type QueueSender object {
     }
 
     # Stops the consumer endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 };

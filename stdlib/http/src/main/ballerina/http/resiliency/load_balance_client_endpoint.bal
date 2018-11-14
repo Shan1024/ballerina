@@ -29,7 +29,7 @@ public type LoadBalanceClient object {
     # The initialization function for the load balance client endpoint.
     #
     # + lbClientConfig - The user provided configurations for the load balance client endpoint
-    public function init(LoadBalanceClientEndpointConfiguration lbClientConfig);
+    public function init(LoadBalanceClientEndpointConfiguration lbClientConfig) returns ();
 
     # Returns the HTTP LoadBalancer actions associated with the endpoint.
     #
@@ -77,7 +77,7 @@ public type LoadBalanceClientEndpointConfiguration record {
     !...
 };
 
-function LoadBalanceClient.init(LoadBalanceClientEndpointConfiguration lbClientConfig) {
+function LoadBalanceClient.init(LoadBalanceClientEndpointConfiguration lbClientConfig) returns () {
     self.httpEP.httpClient = createLoadBalancerClient(lbClientConfig);
     self.httpEP.config.circuitBreaker = lbClientConfig.circuitBreaker;
     self.httpEP.config.timeoutMillis = lbClientConfig.timeoutMillis;

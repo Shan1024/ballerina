@@ -90,7 +90,7 @@ public type Cache object {
     #
     # + key - value which should be used as the key
     # + value - value to be cached
-    public function put(string key, any value) {
+    public function put(string key, any value) returns () {
         // We need to synchronize this process otherwise concurrecy might cause issues.
         lock {
             int cacheCapacity = self.capacity;
@@ -114,7 +114,7 @@ public type Cache object {
     }
 
     # Evicts the cache when cache is full.
-    function evict() {
+    function evict() returns () {
         int maxCapacity = self.capacity;
         float ef = self.evictionFactor;
         int numberOfKeysToEvict = <int>(maxCapacity * ef);
@@ -164,7 +164,7 @@ public type Cache object {
     # Removes a cached value from a cache.
     #
     # + key - key of the cache entry which needs to be removed
-    public function remove(string key) {
+    public function remove(string key) returns () {
         // Cache might already be removed by the cache clearing task. So no need to check the return value.
         _ = self.entries.remove(key);
     }
@@ -259,7 +259,8 @@ function runCacheExpiry() returns error? {
 }
 
 # Utility function to identify which cache entries should be evicted.
-function checkAndAdd(int numberOfKeysToEvict, string[] cacheKeys, int[] timestamps, string key, int lastAccessTime) {
+function checkAndAdd(int numberOfKeysToEvict, string[] cacheKeys, int[] timestamps, string key,
+                     int lastAccessTime) returns () {
     string myKey = key;
     int myLastAccessTime = lastAccessTime;
 

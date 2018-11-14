@@ -175,7 +175,7 @@ public type CallerActions object {
     # response using the rejected promise.
     #
     # + promise - The Push Promise to be rejected
-    public extern function rejectPromise(PushPromise promise);
+    public extern function rejectPromise(PushPromise promise) returns ();
 };
 
 # Defines a timeout error occurred during service invocation.

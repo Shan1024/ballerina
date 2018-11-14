@@ -303,7 +303,7 @@ function getError() returns error {
     return httpConnectorErr;
 }
 
-function populateRequestFields (Request originalRequest, Request newRequest)  {
+function populateRequestFields (Request originalRequest, Request newRequest) returns () {
     newRequest.rawPath = originalRequest.rawPath;
     newRequest.method = originalRequest.method;
     newRequest.httpVersion = originalRequest.httpVersion;

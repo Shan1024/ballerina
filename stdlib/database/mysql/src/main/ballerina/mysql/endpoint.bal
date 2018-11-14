@@ -46,7 +46,7 @@ public type Client object {
     # Gets called when the endpoint is being initialized during the module initialization.
     #
     # + c - The ClientEndpointConfiguration of the endpoint
-    public function init(ClientEndpointConfiguration c) {
+    public function init(ClientEndpointConfiguration c) returns () {
         self.mysqlClient = createClient(c);
     }
 
@@ -58,7 +58,7 @@ public type Client object {
     }
 
     # Stops the JDBC client.
-    public function stop() {
+    public function stop() returns () {
         sql:close(self.mysqlClient);
     }
 };

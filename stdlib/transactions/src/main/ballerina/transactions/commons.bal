@@ -138,7 +138,7 @@ function protocolCompatible(string coordinationType, Protocol[] participantProto
     return participantProtocolIsValid;
 }
 
-function respondToBadRequest(http:Listener conn, string msg) {
+function respondToBadRequest(http:Listener conn, string msg) returns () {
     endpoint http:Listener ep = conn;
     log:printError(msg);
     http:Response res = new;  res.statusCode = http:BAD_REQUEST_400;
@@ -244,7 +244,7 @@ function registerLocalParticipantWithInitiator(string transactionId, int transac
     }
 }
 
-function removeParticipatedTransaction(string participatedTxnId) {
+function removeParticipatedTransaction(string participatedTxnId) returns () {
     boolean removed = participatedTransactions.remove(participatedTxnId);
     if (!removed) {
         error err = error("Removing participated transaction: " + participatedTxnId + " failed");
@@ -252,7 +252,7 @@ function removeParticipatedTransaction(string participatedTxnId) {
     }
 }
 
-function removeInitiatedTransaction(string transactionId) {
+function removeInitiatedTransaction(string transactionId) returns () {
     boolean removed = initiatedTransactions.remove(transactionId);
     if (!removed) {
         error err = error("Removing initiated transaction: " + transactionId + " failed");

@@ -32,7 +32,7 @@ public type SimpleDurableTopicSubscriber object {
     # Initializes the simple durable topic subscriber endpoint
     #
     # + c - Configurations related to the endpoint
-    public function init(SimpleDurableTopicSubscriberEndpointConfiguration c) {
+    public function init(SimpleDurableTopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         Connection conn = new({
                 initialContextFactory: self.config.initialContextFactory,
@@ -63,7 +63,7 @@ public type SimpleDurableTopicSubscriber object {
     # Binds the endpoint to a service
     #
     # + serviceType - type descriptor of the service to bind to
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         match (self.subscriber) {
             DurableTopicSubscriber c => {
                 c.register(serviceType);
@@ -76,7 +76,7 @@ public type SimpleDurableTopicSubscriber object {
     }
 
     # Starts the endpoint. Function is ignored by the subscriber endpoint
-    public function start() {
+    public function start() returns () {
         // Ignore
     }
 
@@ -96,7 +96,7 @@ public type SimpleDurableTopicSubscriber object {
     }
 
     # Stops the endpoint. Function is ignored by the subscriber endpoint
-    public function stop() {
+    public function stop() returns () {
         // Ignore
     }
 

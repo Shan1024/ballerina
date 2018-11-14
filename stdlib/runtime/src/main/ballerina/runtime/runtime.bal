@@ -18,7 +18,7 @@
 # Halts the current worker for a predefined amount of time.
 #
 # + millis - Amount of time to sleep in milliseconds
-public extern function sleep(int millis);
+public extern function sleep(int millis) returns ();
 
 // Todo - Remove
 # Returns the value associated with the specified property name.
@@ -28,4 +28,4 @@ public extern function sleep(int millis);
 public extern function getProperty(@sensitive string name) returns string;
 
 # Check point the current state of the execution.
-public extern function checkpoint ();
+public extern function checkpoint() returns ();

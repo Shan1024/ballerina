@@ -28,7 +28,7 @@ public type AuthHandlerRegistry object {
     #
     # + id - Auth provider id
     # + authnHandler - HttpAuthnHandler instance
-    public function add (string id, HttpAuthnHandler authnHandler);
+    public function add (string id, HttpAuthnHandler authnHandler) returns ();
 
     # Retrieves an HttpAuthnHandler from HttpAuthHandlerRegistry which corresponds to the given id
     #
@@ -42,13 +42,13 @@ public type AuthHandlerRegistry object {
     public function getAll () returns map<HttpAuthnHandler>;
 
     # Removes a specific authn handler from the HttpAuthnHandler map
-    public function remove (string id);
+    public function remove (string id) returns ();
 
     # Removes all authn handler from the HttpAuthnHandler map
-    public function clear ();
+    public function clear () returns ();
 };
 
-function AuthHandlerRegistry.add (string id, HttpAuthnHandler authnHandler) {
+function AuthHandlerRegistry.add (string id, HttpAuthnHandler authnHandler) returns () {
     self.httpAuthHandlers[id] = authnHandler;
 }
 
@@ -63,10 +63,10 @@ function AuthHandlerRegistry.getAll () returns map<HttpAuthnHandler> {
     return self.httpAuthHandlers;
 }
 
-function AuthHandlerRegistry.remove (string id) {
+function AuthHandlerRegistry.remove (string id) returns () {
     _ = self.httpAuthHandlers.remove(id);
 }
 
-function AuthHandlerRegistry.clear () {
+function AuthHandlerRegistry.clear () returns () {
     self.httpAuthHandlers.clear();
 }

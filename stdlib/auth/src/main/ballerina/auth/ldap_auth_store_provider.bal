@@ -149,4 +149,5 @@ public type LdapAuthStoreProvider object {
 #
 # + ldapAuthStoreProvider - LdapAuthStoreProvider provider object
 # + instanceId - Unique id generated to identify an endpoint
-public extern function initLdapConnectionContext(LdapAuthStoreProvider ldapAuthStoreProvider, string instanceId);
+public extern function initLdapConnectionContext(LdapAuthStoreProvider ldapAuthStoreProvider,
+                                                 string instanceId) returns ();

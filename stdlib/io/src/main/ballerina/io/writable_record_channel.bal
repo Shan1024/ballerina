@@ -36,7 +36,7 @@ public type WritableTextRecordChannel object {
     # + recordSeparator - Record separator which will separate between records
     # + fmt - Format which will be used to represent the type of record i.e csv
     extern function init(WritableCharacterChannel cChannel, string fieldSeparator,
-                         string recordSeparator, string fmt);
+                         string recordSeparator, string fmt) returns ();
 
     # Writes records to a given output resource.
 

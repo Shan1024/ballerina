@@ -39,24 +39,24 @@ public type ConsumerTemplate object {
     # Initialize the consumer endpoint
     #
     # + c - Configurations related to the endpoint
-    public function init(ConsumerEndpointConfiguration c) {
+    public function init(ConsumerEndpointConfiguration c) returns () {
 
     }
 
     # Registers consumer endpoint in the service
     #
     # + serviceType - type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Starts the consumer endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
     # Stops the consumer endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 

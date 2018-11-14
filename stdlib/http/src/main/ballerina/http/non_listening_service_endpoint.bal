@@ -20,15 +20,15 @@ public type NonListener object {
     private Connection conn;
     private ServiceEndpointConfiguration config;
 
-    public function init (ServiceEndpointConfiguration c);
+    public function init (ServiceEndpointConfiguration c) returns ();
     public extern function initEndpoint () returns (error?);
-    public extern function register (typedesc serviceType);
-    public extern function start ();
+    public extern function register (typedesc serviceType) returns ();
+    public extern function start () returns ();
     public extern function getCallerActions() returns Connection;
-    public extern function stop ();
+    public extern function stop () returns ();
 };
 
-function NonListener.init (ServiceEndpointConfiguration c) {
+function NonListener.init (ServiceEndpointConfiguration c) returns () {
     self.config = c;
     var err = self.initEndpoint();
     if (err is error) {

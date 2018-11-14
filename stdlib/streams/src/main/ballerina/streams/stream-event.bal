@@ -37,7 +37,7 @@ public type StreamEvent object {
         return clone;
     }
 
-    public function addData(map eventData) {
+    public function addData(map eventData) returns () {
         foreach k, v in eventData {
             self.data[k] = v;
         }

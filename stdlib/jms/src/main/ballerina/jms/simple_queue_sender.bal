@@ -32,7 +32,7 @@ public type SimpleQueueSender object {
     # Initialize the SimpleQueueSender endpoint
     #
     # + c - Configurations related to the SimpleQueueSender endpoint
-    public function init(SimpleQueueSenderEndpointConfiguration c) {
+    public function init(SimpleQueueSenderEndpointConfiguration c) returns () {
         self.config = c;
         Connection conn = new({
                 initialContextFactory: self.config.initialContextFactory,
@@ -60,12 +60,12 @@ public type SimpleQueueSender object {
     # This method is not used since SimpleQueueSender is a non-service endpoint.
     #
     # + serviceType - type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
 
     }
 
     # Starts the SimpleQueueSender endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -85,7 +85,7 @@ public type SimpleQueueSender object {
     }
 
     # Stops the  SimpleQueueSender endpoint
-    public function stop() {
+    public function stop() returns () {
     }
 
     # Creates a JMS message which holds text content

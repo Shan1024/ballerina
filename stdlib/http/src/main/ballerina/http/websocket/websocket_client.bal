@@ -37,13 +37,13 @@ public type WebSocketClient object {
     # Gets called when the endpoint is being initialize during module init time.
     #
     # + c - The `WebSocketClientEndpointConfig` of the endpoint
-    public function init(WebSocketClientEndpointConfig c) {
+    public function init(WebSocketClientEndpointConfig c) returns () {
         self.config = c;
         self.initEndpoint();
     }
 
     # Initializes the endpoint.
-    public extern function initEndpoint();
+    public extern function initEndpoint() returns ();
 
     # Allows access to connector that the client endpoint uses.
     #
@@ -53,7 +53,7 @@ public type WebSocketClient object {
     }
 
     # Stops the registered service.
-    public function stop() {
+    public function stop() returns () {
         WebSocketConnector webSocketConnector = self.getCallerActions();
         check webSocketConnector.close(statusCode = 1001, reason = "going away", timeoutInSecs = 0);
     }

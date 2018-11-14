@@ -17,7 +17,7 @@
 # Removes each element that matches the given key.
 #
 # + key - Key of the field to remove
-public extern function json.remove(string key);
+public extern function json.remove(string key) returns ();
 
 # Converts a JSON object to a string representation.
 #

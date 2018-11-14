@@ -218,7 +218,7 @@ public type RedirectClient object {
     # When a `PushPromise` is rejected, there is no chance of fetching a promised response using the rejected promise.
     #
     # + promise - The Push Promise to be rejected
-    public function rejectPromise(PushPromise promise) {
+    public function rejectPromise(PushPromise promise) returns () {
         self.httpClient.rejectPromise(promise);
     }
 };
@@ -373,7 +373,7 @@ function isAbsolute(string locationUrl) returns boolean {
 }
 
 //Reset the current redirect count to 0 and set the resolved requested URI.
-function setCountAndResolvedURL(RedirectClient redirectClient, Response response, string resolvedRequestedURI) {
+function setCountAndResolvedURL(RedirectClient redirectClient, Response response, string resolvedRequestedURI) returns () {
     log:printDebug(function() returns string {
         return "Ultimate response coming from the request: " + resolvedRequestedURI;
     });

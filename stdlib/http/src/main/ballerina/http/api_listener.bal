@@ -31,15 +31,15 @@ public type APIListener object {
     # Gets called when the endpoint is being initialize during module init time.
     #
     # + c - The `SecureEndpointConfiguration` of the endpoint
-    public function init(SecureEndpointConfiguration c);
+    public function init(SecureEndpointConfiguration c) returns ();
 
     # Gets called every time a service attaches itself to this endpoint. Also happens at module initialization.
     #
     # + serviceType - The type of the service to be registered
-    public function register(typedesc serviceType);
+    public function register(typedesc serviceType) returns ();
 
     # Starts the registered service.
-    public function start();
+    public function start() returns ();
 
     # Returns the connector that client code uses.
     #
@@ -47,18 +47,18 @@ public type APIListener object {
     public function getCallerActions() returns (Connection);
 
     # Stops the registered service.
-    public function stop();
+    public function stop() returns ();
 };
 
-function APIListener.init(SecureEndpointConfiguration c) {
+function APIListener.init(SecureEndpointConfiguration c) returns () {
     self.secureListener.init(c);
 }
 
-function APIListener.register(typedesc serviceType) {
+function APIListener.register(typedesc serviceType) returns () {
     self.secureListener.register(serviceType);
 }
 
-function APIListener.start() {
+function APIListener.start() returns () {
     self.secureListener.start();
 }
 
@@ -67,7 +67,7 @@ function APIListener.getCallerActions() returns (APIListenerActions) {
     return apiListenerActions;
 }
 
-function APIListener.stop() {
+function APIListener.stop() returns () {
     self.secureListener.stop();
 }
 

@@ -76,4 +76,4 @@ public type CallerActions object {
 # An internal function used by clients to shutdown the connection pool.
 #
 # + callerActions - The CallerActions object which represents the connection pool.
-public extern function close(CallerActions callerActions);
+public extern function close(CallerActions callerActions) returns ();

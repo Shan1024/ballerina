@@ -37,7 +37,7 @@ public type SecureListener object {
     # Gets called when the endpoint is being initialize during module init time.
     #
     # + c - The `SecureEndpointConfiguration` of the endpoint
-    public function init(SecureEndpointConfiguration c);
+    public function init(SecureEndpointConfiguration c) returns ();
 
     # Initializes the endpoint.
     #
@@ -47,10 +47,10 @@ public type SecureListener object {
     # Gets called every time a service attaches itself to this endpoint. Also happens at module initialization.
     #
     # + serviceType - The type of the service to be registered
-    public function register(typedesc serviceType);
+    public function register(typedesc serviceType) returns ();
 
     # Starts the registered service.
-    public function start();
+    public function start() returns ();
 
     # Returns the connector that client code uses.
     #
@@ -58,7 +58,7 @@ public type SecureListener object {
     public function getCallerActions() returns (Connection);
 
     # Stops the registered service.
-    public function stop();
+    public function stop() returns ();
 };
 
 # Configuration for secure HTTP service endpoint.
@@ -145,7 +145,7 @@ public type AuthProvider record {
     !...
 };
 
-function SecureListener.init(SecureEndpointConfiguration c) {
+function SecureListener.init(SecureEndpointConfiguration c) returns () {
     addAuthFiltersForSecureListener(c, self.instanceId);
     self.httpListener.init(c);
 }
@@ -153,7 +153,7 @@ function SecureListener.init(SecureEndpointConfiguration c) {
 # Add authn and authz filters
 #
 # + config - `SecureEndpointConfiguration` instance
-function addAuthFiltersForSecureListener(SecureEndpointConfiguration config, string instanceId) {
+function addAuthFiltersForSecureListener(SecureEndpointConfiguration config, string instanceId) returns () {
     // add authentication and authorization filters as the first two filters.
     // if there are any other filters specified, those should be added after the authn and authz filters.
     if (config.filters.length() == 0) {
@@ -299,7 +299,7 @@ function createAuthHandler(AuthProvider authProvider, string instanceId) returns
     }
 }
 
-function SecureListener.register(typedesc serviceType) {
+function SecureListener.register(typedesc serviceType) returns () {
     self.httpListener.register(serviceType);
 }
 
@@ -307,7 +307,7 @@ function SecureListener.initEndpoint() returns (error?) {
     return self.httpListener.initEndpoint();
 }
 
-function SecureListener.start() {
+function SecureListener.start() returns () {
     self.httpListener.start();
 }
 
@@ -316,7 +316,7 @@ function SecureListener.getCallerActions() returns (SecureListenerActions) {
     return secureListenerActions;
 }
 
-function SecureListener.stop() {
+function SecureListener.stop() returns () {
     self.httpListener.stop();
 }
 

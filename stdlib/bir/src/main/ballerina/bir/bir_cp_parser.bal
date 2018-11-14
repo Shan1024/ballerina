@@ -22,7 +22,7 @@ public type ConstPoolParser object {
         return self.cp;
     }
 
-    public function parseConstPoolEntry() {
+    public function parseConstPoolEntry() returns () {
         var cpType = self.reader.readInt8();
 
         if (cpType == 1){
@@ -37,15 +37,15 @@ public type ConstPoolParser object {
         }
     }
 
-    function parseInt() {
+    function parseInt() returns () {
         self.cp.ints[self.i] = self.reader.readInt64();
     }
 
-    function parseString() {
+    function parseString() returns () {
         self.cp.strings[self.i] = self.reader.readString();
     }
 
-    function parsePackageId() {
+    function parsePackageId() returns () {
         PackageId id = { org: self.cp.strings[self.reader.readInt32()],
             name: <string> self.cp.strings[self.reader.readInt32()],
             varstionVallue: <string> self.cp.strings[self.reader.readInt32()] };

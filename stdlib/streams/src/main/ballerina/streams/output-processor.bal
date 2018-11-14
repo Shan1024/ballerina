@@ -21,7 +21,7 @@ public type OutputProcess object {
     public new (outputFunc) {
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         int index = 0;
         map[] events = [];
         int i = 0;

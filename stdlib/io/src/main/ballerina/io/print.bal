@@ -16,11 +16,11 @@
 
 # Prints 'any' value to the STDOUT.
 # + a - The value to be printed.
-public extern function print(any... a);
+public extern function print(any... a) returns ();
 
 # Prints an any value to the STDOUT in a new line.
 # + a - The value to be printed.
-public extern function println(any... a);
+public extern function println(any... a) returns ();
 
 # Returns a formatted string using the specified format string and arguments. Following format specifiers are allowed.
 #    b              boolean

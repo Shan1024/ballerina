@@ -28,7 +28,7 @@ public type TableJoinProcessor object {
         self.tableName = "";
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         StreamEvent?[] joinedEvents = [];
         int j = 0;
         foreach event in streamEvents {
@@ -62,7 +62,7 @@ public type TableJoinProcessor object {
         self.nextProcessor(outputEvents);
     }
 
-    public function setJoinProperties(string tn, string sn, Window wi) {
+    public function setJoinProperties(string tn, string sn, Window wi) returns () {
         self.tableName = tn;
         self.streamName = sn;
         self.windowInstance = wi;

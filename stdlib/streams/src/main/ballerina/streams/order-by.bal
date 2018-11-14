@@ -27,12 +27,12 @@ public type OrderBy object {
 
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         self.topDownMergeSort(streamEvents, self.sortTypes);
         self.nextProcessorPointer(streamEvents);
     }
 
-    function topDownMergeSort(StreamEvent[] a, string[] tmpSortTypes) {
+    function topDownMergeSort(StreamEvent[] a, string[] tmpSortTypes) returns () {
         int index = 0;
         int n = a.length();
         StreamEvent[] b = [];
@@ -45,7 +45,7 @@ public type OrderBy object {
 
     function topDownSplitMerge(StreamEvent[] b, int iBegin, int iEnd, StreamEvent[] a,
                                function (StreamEvent, StreamEvent, string[], int) returns int sortFunc,
-                               string[] tmpSortTypes) {
+                               string[] tmpSortTypes) returns () {
 
         if (iEnd - iBegin < 2) {
             return;
@@ -58,7 +58,7 @@ public type OrderBy object {
 
     function topDownMerge(StreamEvent[] a, int iBegin, int iMiddle, int iEnd, StreamEvent[] b,
                           function (StreamEvent, StreamEvent, string[], int) returns int sortFunc,
-                          string[] sortFieldMetadata) {
+                          string[] sortFieldMetadata) returns () {
         int i = iBegin;
         int j = iMiddle;
 

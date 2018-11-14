@@ -53,21 +53,21 @@ public type PushPromise object {
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public extern function addHeader (string headerName, string headerValue);
+    public extern function addHeader (string headerName, string headerValue) returns ();
 
     # Sets the value of a transport header in `PushPromise`.
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public extern function setHeader (string headerName, string headerValue);
+    public extern function setHeader (string headerName, string headerValue) returns ();
 
     # Removes a transport header from the `PushPromise`.
     #
     # + headerName - The header name
-    public extern function removeHeader (string headerName);
+    public extern function removeHeader (string headerName) returns ();
 
     # Removes all transport headers from the `PushPromise`.
-    public extern function removeAllHeaders ();
+    public extern function removeAllHeaders () returns ();
 
     # Gets all transport header names from the `PushPromise`.
     #

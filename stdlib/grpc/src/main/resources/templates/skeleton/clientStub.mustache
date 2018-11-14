@@ -5,7 +5,7 @@ public type {{serviceName}}{{#equals stubType "blocking"}}Blocking{{/equals}}Stu
     public grpc:Client clientEndpoint;
     public grpc:Stub stub;
 
-    function initStub (grpc:Client ep) {
+    function initStub (grpc:Client ep) returns () {
         grpc:Stub navStub = new;
         navStub.initStub(ep, "{{stubType}}", DESCRIPTOR_KEY, descriptorMap);
         self.stub = navStub;

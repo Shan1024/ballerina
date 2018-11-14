@@ -54,13 +54,13 @@ public type LinkedList object {
     }
 
     // Reset the iterator head to the front of the list.
-    public function resetToFront() {
+    public function resetToFront() returns () {
         self.curr = ();
         self.ascend = true;
     }
 
     // Reset the iterator head to the rear of the list.
-    public function resetToRear() {
+    public function resetToRear() returns () {
         self.curr = ();
         self.ascend = false;
     }
@@ -134,7 +134,7 @@ public type LinkedList object {
     }
 
     // Removes the self.current node.
-    public function removeCurrent() {
+    public function removeCurrent() returns () {
         match self.curr {
             Node c => {
                 _ = self.unlink(c);
@@ -149,7 +149,7 @@ public type LinkedList object {
     }
 
     // Removes all of the elements from this list.
-    public function clear() {
+    public function clear() returns () {
         // TODO: unlink every node and clean up properly.
         //match self.first {
         //    Node f => {
@@ -240,12 +240,12 @@ public type LinkedList object {
     }
 
     // Inserts the specified element at the beginning of this list.
-    public function addFirst(any data) {
+    public function addFirst(any data) returns () {
         self.linkFirst(data);
     }
 
     // Inserts the specified element at the end of this list.
-    public function addLast(any data) {
+    public function addLast(any data) returns () {
         self.linkLast(data);
     }
 
@@ -273,7 +273,7 @@ public type LinkedList object {
         }
     }
 
-    public function insertBeforeCurrent(any data) {
+    public function insertBeforeCurrent(any data) returns () {
         match self.curr {
             Node c => {
                 self.linkBefore(data, c);
@@ -283,7 +283,7 @@ public type LinkedList object {
     }
 
     // Links data as first element.
-    function linkFirst(any data) {
+    function linkFirst(any data) returns () {
         match self.first {
             Node f => {
                 Node newNode = new((), data, f);
@@ -300,7 +300,7 @@ public type LinkedList object {
     }
 
     // Links data as last element.
-    function linkLast(any data) {
+    function linkLast(any data) returns () {
         match self.last {
             Node l => {
                 Node newNode = new(l, data, ());
@@ -317,7 +317,7 @@ public type LinkedList object {
     }
 
     // Inserts element 'data' before non-null Node succ.
-    function linkBefore(any data, Node succ) {
+    function linkBefore(any data, Node succ) returns () {
         Node? pred = succ.prev;
         Node newNode = new(pred, data, succ);
         succ.prev = newNode;

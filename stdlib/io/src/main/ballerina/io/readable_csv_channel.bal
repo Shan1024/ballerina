@@ -37,7 +37,7 @@ public type ReadableCSVChannel object {
     # Skips the given number of headers.
     #
     # + nHeaders - Number of headers which should be skipped
-    function skipHeaders(int nHeaders) {
+    function skipHeaders(int nHeaders) returns () {
         int count = MINIMUM_HEADER_COUNT;
         while (count < nHeaders){
             var result = self.getNext();

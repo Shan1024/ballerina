@@ -612,7 +612,7 @@ function WebSubHub.unregisterTopic(string topic) returns error? {
 # + response - The response being sent
 # + hubs - The hubs the publisher advertises as the hubs that it publishes updates to
 # + topic - The topic to which subscribers need to subscribe to, to receive updates for the resource
-public function addWebSubLinkHeader(http:Response response, string[] hubs, string topic) {
+public function addWebSubLinkHeader(http:Response response, string[] hubs, string topic) returns () {
     string hubLinkHeader = "";
     foreach hub in hubs {
         hubLinkHeader = hubLinkHeader + "<" + hub + ">; rel=\"hub\", ";

@@ -30,7 +30,7 @@ public type Participant2pcClientEP object {
     http:Client httpClient;
     Participant2pcClientConfig conf;
 
-    public function init(Participant2pcClientConfig c) {
+    public function init(Participant2pcClientConfig c) returns () {
         endpoint http:Client httpEP {
             url: c.participantURL,
             timeoutMillis: c.timeoutMillis,

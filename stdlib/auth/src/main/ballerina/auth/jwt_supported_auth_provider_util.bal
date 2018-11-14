@@ -48,7 +48,7 @@ public type InferredJwtAuthProviderConfig record {
 #
 # + username - user name
 # + authConfig - authentication provider configurations that supports generating JWT for client interactions
-function setAuthToken(string username, InferredJwtAuthProviderConfig authConfig) {
+function setAuthToken(string username, InferredJwtAuthProviderConfig authConfig) returns () {
     internal:JwtHeader header = createHeader(authConfig);
     internal:JwtPayload payload = createPayload(username, authConfig);
     internal:JWTIssuerConfig config = createJWTIssueConfig(authConfig);

@@ -90,7 +90,7 @@ public type Counter object {
     }
 
     # Performs the necessary native operations during the initialization of the counter.
-    extern function initialize();
+    extern function initialize() returns ();
 
     # Register the counter metric instance with the Metric Registry.
     #
@@ -99,16 +99,16 @@ public type Counter object {
     public extern function register() returns error?;
 
     # Unregister the counter metric instance with the Metric Registry.
-    public extern function unregister();
+    public extern function unregister() returns ();
 
     # Increment the counter's value by an amount.
     #
     # + amount - The amount by which the value needs to be increased. The amount is defaulted as 1 and will be
     #            used if there is no amount passed in.
-    public extern function increment(int amount = 1);
+    public extern function increment(int amount = 1) returns ();
 
     # Resets the counter's value to zero.
-    public extern function reset();
+    public extern function reset() returns ();
 
     # Retrieves the counter's current value.
     #
@@ -158,7 +158,7 @@ public type Gauge object {
     }
 
     # Performs the necessary native operations during the initialization of the gauge.
-    extern function initialize();
+    extern function initialize() returns ();
 
     # Register the gauge metric instance with the Metric Registry.
     #
@@ -167,24 +167,24 @@ public type Gauge object {
     public extern function register() returns error?;
 
     # Unregister the counter metric instance with the Metric Registry.
-    public extern function unregister();
+    public extern function unregister() returns ();
 
     # Increment the gauge's value by an amount.
     #
     # + amount - The amount by which the value of gauge needs to be increased.
     #            The amount is defaulted as 1.0 and will be used if there is no amount passed in.
-    public extern function increment(float amount = 1.0);
+    public extern function increment(float amount = 1.0) returns ();
 
     # Decrement the gauge's value by an amount.
     #
     # + amount - The amount by which the value of gauge needs to be decreased.
     #            The amount is defaulted as 1.0 and will be used if there is no amount passed in.
-    public extern function decrement(float amount = 1.0);
+    public extern function decrement(float amount = 1.0) returns ();
 
     # Sets the instantaneous value for gauge.
     #
     # + amount - The instantaneous value that needs to be set as gauge value.
-    public extern function setValue(float amount);
+    public extern function setValue(float amount) returns ();
 
     # Retrieves the gauge's current value.
     #

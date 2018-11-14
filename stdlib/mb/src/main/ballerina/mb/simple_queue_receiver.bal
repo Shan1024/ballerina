@@ -31,7 +31,7 @@ public type SimpleQueueReceiver object {
     # Initialize the SimpleQueueReceiver endpoint
     #
     # + c - Configurations related to the SimpleQueueReceiver endpoint
-    public function init(SimpleQueueListenerEndpointConfiguration c) {
+    public function init(SimpleQueueListenerEndpointConfiguration c) returns () {
         self.config = c;
         self.receiver.init({
                 initialContextFactory:"bmbInitialContextFactory",
@@ -49,12 +49,12 @@ public type SimpleQueueReceiver object {
     # Binds the SimlpeQueueReceiver endpoint to a service
     #
     # + serviceType - type descriptor of the service to bind to
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.receiver.register(serviceType);
     }
 
     # Starts the endpoint. Function is ignored by the receiver endpoint
-    public function start() {
+    public function start() returns () {
         self.receiver.start();
     }
 
@@ -73,7 +73,7 @@ public type SimpleQueueReceiver object {
     }
 
     # Stops consuming messages through QueueReceiver endpoint
-    public function stop() {
+    public function stop() returns () {
         self.receiver.stop();
     }
 

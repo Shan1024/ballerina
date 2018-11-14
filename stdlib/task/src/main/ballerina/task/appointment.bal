@@ -31,7 +31,7 @@ public type Appointment object {
     public new(onTrigger, onError, scheduleCronExpression) {}
 
     // Schedule the appointment
-    public extern function schedule();
+    public extern function schedule() returns ();
     // Cancel the appointment
-    public extern function cancel();
+    public extern function cancel() returns ();
 };

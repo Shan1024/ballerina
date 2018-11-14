@@ -24,16 +24,16 @@
 public type Listener object {
     private ListenerEndpointConfiguration config;
 
-    public function init(ListenerEndpointConfiguration listenerConfig) {
+    public function init(ListenerEndpointConfiguration listenerConfig) returns () {
         self.config = listenerConfig;
         check self.initEndpoint();
     }
 
     extern function initEndpoint() returns error?;
 
-    public extern function register(typedesc serviceType);
+    public extern function register(typedesc serviceType) returns ();
 
-    public extern function start();
+    public extern function start() returns ();
 };
 
 # Represents configurations that required for directory listener.

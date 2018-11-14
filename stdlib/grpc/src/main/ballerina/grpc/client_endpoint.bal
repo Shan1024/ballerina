@@ -22,19 +22,19 @@ public type Client object {
     # record is used for endpoint initialization.
     #
     # + config - - The ClientEndpointConfig of the endpoint.
-    public extern function init(ClientEndpointConfig config);
+    public extern function init(ClientEndpointConfig config) returns ();
 
     # Gets called every time a service attaches itself to this endpoint - also happens at module init time.
     # Not supported in client endpoint.
     #
     # + serviceType - - The type of the service to be registered.
-    public extern function register(typedesc serviceType);
+    public extern function register(typedesc serviceType) returns ();
 
     # Starts the registered service. Not supported in client endpoint.
-    public extern function start();
+    public extern function start() returns ();
 
     # Stops the registered. Not supported in client endpoint.
-    public extern function stop();
+    public extern function stop() returns ();
 
     # Returns the client connection which is used to send message to server.
     #

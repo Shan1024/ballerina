@@ -30,7 +30,7 @@ public type SimpleTopicSubscriber object {
     # Initialize simple topic subscirber endpoint
     #
     # + c - Simple topic subscrirber enpoint configuration
-    public function init(SimpleTopicSubscriberEndpointConfiguration c) {
+    public function init(SimpleTopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         Connection conn = new({
                 initialContextFactory: self.config.initialContextFactory,
@@ -58,7 +58,7 @@ public type SimpleTopicSubscriber object {
     # Register simple topic subscriber endpoint
     #
     # + serviceType - Type descriptor of the service
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         match (self.subscriber) {
             TopicSubscriber c => {
                 c.register(serviceType);
@@ -73,7 +73,7 @@ public type SimpleTopicSubscriber object {
     }
 
     # Start simple topic subscriber endpoint
-    public function start() {
+    public function start() returns () {
 
     }
 
@@ -93,7 +93,7 @@ public type SimpleTopicSubscriber object {
     }
 
     # Stop simple topic subsriber endpoint
-    public function stop() {
+    public function stop() returns () {
 
     }
 

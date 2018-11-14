@@ -30,7 +30,7 @@ public type SimpleDurableTopicSubscriber object {
     # Initializes the simple durable topic subscriber endpoint
     #
     # + c - Configurations related to the endpoint
-    public function init(SimpleDurableTopicSubscriberEndpointConfiguration c) {
+    public function init(SimpleDurableTopicSubscriberEndpointConfiguration c) returns () {
         self.config = c;
         self.subscriber.init({
                 initialContextFactory:"wso2mbInitialContextFactory",
@@ -47,12 +47,12 @@ public type SimpleDurableTopicSubscriber object {
     # Binds the endpoint to a service
     #
     # + serviceType - type descriptor of the service to bind to
-    public function register(typedesc serviceType) {
+    public function register(typedesc serviceType) returns () {
         self.subscriber.register(serviceType);
     }
 
     # Starts the endpoint. Function is ignored by the subscriber endpoint
-    public function start() {
+    public function start() returns () {
         self.subscriber.start();
     }
 
@@ -70,7 +70,7 @@ public type SimpleDurableTopicSubscriber object {
     }
 
     # Stops the endpoint. Function is ignored by the subscriber endpoint
-    public function stop() {
+    public function stop() returns () {
         self.subscriber.stop();
     }
     # Creates a text message that can be sent through any JMS message producer to a queue or topic.

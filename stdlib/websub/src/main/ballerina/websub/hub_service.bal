@@ -267,7 +267,7 @@ function validateSubscriptionChangeRequest(string mode, string topic, string cal
 # + callback - The callback URL of the new subscription/unsubscription request
 # + topic - The topic specified in the new subscription/unsubscription request
 # + params - Parameters specified in the new subscription/unsubscription request
-function verifyIntentAndAddSubscription(string callback, string topic, map<string> params) {
+function verifyIntentAndAddSubscription(string callback, string topic, map<string> params) returns () {
     endpoint http:Client callbackEp {
         url:callback,
         secureSocket: hubClientSecureSocket
@@ -350,7 +350,7 @@ function verifyIntentAndAddSubscription(string callback, string topic, map<strin
 #
 # + mode - Whether the change is for addition/removal
 # + topic - The topic for which registration is changing
-function changeTopicRegistrationInDatabase(string mode, string topic) {
+function changeTopicRegistrationInDatabase(string mode, string topic) returns () {
     endpoint h2:Client subscriptionDbEp {
         path: hubDatabaseDirectory,
         name: hubDatabaseName,
@@ -384,7 +384,7 @@ function changeTopicRegistrationInDatabase(string mode, string topic) {
 #
 # + mode - Whether the subscription change is for unsubscription/unsubscription
 # + subscriptionDetails - The details of the subscription changing
-function changeSubscriptionInDatabase(string mode, SubscriptionDetails subscriptionDetails) {
+function changeSubscriptionInDatabase(string mode, SubscriptionDetails subscriptionDetails) returns () {
     endpoint h2:Client subscriptionDbEp {
         path: hubDatabaseDirectory,
         name: hubDatabaseName,
@@ -424,7 +424,7 @@ function changeSubscriptionInDatabase(string mode, SubscriptionDetails subscript
 }
 
 # Function to initiate set up activities on startup/restart.
-function setupOnStartup() {
+function setupOnStartup() returns () {
     if (hubPersistenceEnabled) {
         addTopicRegistrationsOnStartup();
         addSubscriptionsOnStartup(); //TODO:verify against topics
@@ -433,7 +433,7 @@ function setupOnStartup() {
 }
 
 # Function to load topic registrations from the database.
-function addTopicRegistrationsOnStartup() {
+function addTopicRegistrationsOnStartup() returns () {
     endpoint h2:Client subscriptionDbEp {
         path: hubDatabaseDirectory,
         name: hubDatabaseName,
@@ -465,7 +465,7 @@ function addTopicRegistrationsOnStartup() {
 }
 
 # Function to add subscriptions to the broker on startup, if persistence is enabled.
-function addSubscriptionsOnStartup() {
+function addSubscriptionsOnStartup() returns () {
     endpoint h2:Client subscriptionDbEp {
         path: hubDatabaseDirectory,
         name: hubDatabaseName,
@@ -499,7 +499,7 @@ function addSubscriptionsOnStartup() {
 }
 
 # Function to delete topic and subscription details from the database at shutdown, if persistence is enabled.
-function clearSubscriptionDataInDb() {
+function clearSubscriptionDataInDb() returns () {
     endpoint h2:Client subscriptionDbEp {
         path: hubDatabaseDirectory,
         name: hubDatabaseName,
@@ -545,7 +545,7 @@ function fetchTopicUpdate(string topic) returns http:Response|error {
 # + callback - The callback URL registered for the subscriber
 # + subscriptionDetails - The subscription details for the particular subscriber
 # + webSubContent - The content to be sent to subscribers
-function distributeContent(string callback, SubscriptionDetails subscriptionDetails, WebSubContent webSubContent) {
+function distributeContent(string callback, SubscriptionDetails subscriptionDetails, WebSubContent webSubContent) returns () {
     endpoint http:Client callbackEp {
         url:callback,
         secureSocket: hubClientSecureSocket

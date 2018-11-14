@@ -22,7 +22,7 @@ public type Filter object {
 
     }
 
-    public function process(StreamEvent[] streamEvents) {
+    public function process(StreamEvent[] streamEvents) returns () {
         StreamEvent[] newStreamEventArr = [];
         int index = 0;
         foreach event in streamEvents {

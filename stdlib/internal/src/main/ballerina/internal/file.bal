@@ -25,7 +25,7 @@ public type Path object {
     }
 
     # Constructs the path.
-    extern function init(string r);
+    extern function init(string r) returns ();
 
     # Retrieves the absolute path from the provided location.
     #

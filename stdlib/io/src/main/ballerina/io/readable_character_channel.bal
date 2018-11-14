@@ -33,7 +33,7 @@ public type ReadableCharacterChannel object {
     #
     # + bChannel - ReadableByteChannel which should be used to initalize the ReadableCharacterChannel
     # + cs - Character-set (i.e UTF-8) which should be used to encode/decode
-    extern function init(ReadableByteChannel bChannel, string cs);
+    extern function init(ReadableByteChannel bChannel, string cs) returns ();
 
     # Reads a given number of characters.
     #

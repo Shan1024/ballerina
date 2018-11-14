@@ -27,7 +27,7 @@ public type Session object {
         self.initEndpoint(connection);
     }
 
-    extern function initEndpoint(Connection connection);
+    extern function initEndpoint(Connection connection) returns ();
 
     # Creates a JMS message which holds text content
     #

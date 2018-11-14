@@ -26,18 +26,18 @@ public type Listener object {
     # Gets called when the endpoint is being initialize during module init time.
     #
     # + config - The ServiceEndpointConfiguration of the endpoint.
-    public extern function init(ServiceEndpointConfiguration config);
+    public extern function init(ServiceEndpointConfiguration config) returns ();
 
     # Gets called every time a service attaches itself to this endpoint - also happens at module init time.
     #
     # + serviceType - The type of the service to be registered.
-    public extern function register(typedesc serviceType);
+    public extern function register(typedesc serviceType) returns ();
 
     # Starts the registered service.
-    public extern function start();
+    public extern function start() returns ();
 
     # Stops the registered service.
-    public extern function stop();
+    public extern function stop() returns ();
 
     # Returns the client connection that servicestub code uses.
     #

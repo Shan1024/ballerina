@@ -277,7 +277,7 @@ type TwoPhaseCommitTransaction object {
         return ret;
     }
 
-    function removeParticipant(string participantId, string failedMessage) {
+    function removeParticipant(string participantId, string failedMessage) returns () {
         boolean participantRemoved = self.participants.remove(participantId);
         if (!participantRemoved) {
             log:printError(failedMessage);

@@ -38,15 +38,15 @@ public type Listener object {
     # Gets called when the endpoint is being initialized during module initialization.
     #
     # + c - The Subscriber Service Endpoint Configuration of the endpoint
-    public function init(SubscriberServiceEndpointConfiguration c);
+    public function init(SubscriberServiceEndpointConfiguration c) returns ();
 
     # Gets called whenever a service attaches itself to this endpoint and during module initialization.
     #
     # + serviceType - The service attached
-    public function register(typedesc serviceType);
+    public function register(typedesc serviceType) returns ();
 
     # Starts the registered service.
-    public function start();
+    public function start() returns ();
 
     # Returns the caller actions the client code uses.
     #
@@ -54,23 +54,23 @@ public type Listener object {
     public function getCallerActions() returns http:Connection;
 
     # Stops the registered service.
-    public function stop();
+    public function stop() returns ();
 
-    extern function initWebSubSubscriberServiceEndpoint();
+    extern function initWebSubSubscriberServiceEndpoint() returns ();
 
-    extern function registerWebSubSubscriberServiceEndpoint(typedesc serviceType);
+    extern function registerWebSubSubscriberServiceEndpoint(typedesc serviceType) returns ();
 
     # Sends subscription requests to the specified/discovered hubs if specified to subscribe on startup.
-    function sendSubscriptionRequests();
+    function sendSubscriptionRequests() returns ();
 
     # Start the registered WebSub Subscriber service.
-    extern function startWebSubSubscriberServiceEndpoint();
+    extern function startWebSubSubscriberServiceEndpoint() returns ();
 
     # Sets the topic to which this service is subscribing, for auto intent verification.
     #
     # + webSubServiceName - The name of the service for which subscription happened for a topic
     # + topic - The topic the subscription happened for
-    extern function setTopic(string webSubServiceName, string topic);
+    extern function setTopic(string webSubServiceName, string topic) returns ();
 
     # Retrieves the parameters specified for subscription as annotations and the callback URL to which notification
     # should happen for the services bound to the endpoint.
@@ -80,7 +80,7 @@ public type Listener object {
 
 };
 
-function Listener.init(SubscriberServiceEndpointConfiguration c) {
+function Listener.init(SubscriberServiceEndpointConfiguration c) returns () {
     self.config = c;
     http:ServiceEndpointConfiguration serviceConfig = {
         host: c.host, port: c.port, secureSocket: c.httpServiceSecureSocket
@@ -90,11 +90,11 @@ function Listener.init(SubscriberServiceEndpointConfiguration c) {
     self.initWebSubSubscriberServiceEndpoint();
 }
 
-function Listener.register(typedesc serviceType) {
+function Listener.register(typedesc serviceType) returns () {
     self.registerWebSubSubscriberServiceEndpoint(serviceType);
 }
 
-function Listener.start() {
+function Listener.start() returns () {
     self.startWebSubSubscriberServiceEndpoint();
     self.sendSubscriptionRequests();
 }
@@ -103,11 +103,11 @@ function Listener.getCallerActions() returns http:Connection {
     return self.serviceEndpoint.getCallerActions();
 }
 
-function Listener.stop() {
+function Listener.stop() returns () {
     self.serviceEndpoint.stop();
 }
 
-function Listener.sendSubscriptionRequests() {
+function Listener.sendSubscriptionRequests() returns () {
     map[] subscriptionDetailsArray = self.retrieveSubscriptionParameters();
 
     foreach subscriptionDetails in subscriptionDetailsArray {
@@ -261,7 +261,7 @@ function retrieveHubAndTopicUrl(string resourceUrl, http:AuthConfig? auth, http:
 # + hub - The hub to which the subscription request is to be sent
 # + subscriptionDetails - Map containing subscription details
 function invokeClientConnectorForSubscription(string hub, http:AuthConfig? auth, http:SecureSocket? localSecureSocket,
-                                              http:FollowRedirects? followRedirects, map subscriptionDetails) {
+                                              http:FollowRedirects? followRedirects, map subscriptionDetails) returns () {
     endpoint Client websubHubClientEP {
         url:hub,
         clientSecureSocket: localSecureSocket,

@@ -35,7 +35,7 @@ public type Timer object {
     public new(onTrigger, onError, interval, delay = -1) {}
 
     // Start the timer
-    public extern function start();
+    public extern function start() returns ();
     // Stop the timer
-    public extern function stop();
+    public extern function stop() returns ();
 };

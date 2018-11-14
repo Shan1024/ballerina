@@ -56,7 +56,7 @@ public extern function xml.getTextValue() returns (string);
 # Set the children of an XML if its a singleton. An Error otherwise. Any existing children will be removed.
 #
 # + children - children
-public extern function xml.setChildren(xml children);
+public extern function xml.setChildren(xml children) returns ();
 
 # Make a deep copy of an XML.
 #
@@ -78,7 +78,7 @@ public extern function xml.slice(int startIndex, int endIndex) returns (xml);
 # Sets the attributes to the provided attributes map.
 #
 # + attributes - Attributes map
-public extern function xml.setAttributes(map attributes);
+public extern function xml.setAttributes(map attributes) returns ();
 
 # Converts a XML object to a JSON representation.
 #
@@ -99,16 +99,16 @@ public extern function xml.selectDescendants(string qname) returns (xml);
 # Remove an attribute from an XML.
 #
 # + qname - Qualified name of the attribute
-public extern function xml.removeAttribute(string qname);
+public extern function xml.removeAttribute(string qname) returns ();
 
 # Append children to an XML if its an element type XML. Error otherwise.
 # New children will be appended at the end of the existing children.
 #
 # + children - children
-public extern function xml.appendChildren(xml children);
+public extern function xml.appendChildren(xml children) returns ();
 
 # Remove children matching the given name from an XML. This operation has no effect
 # if the XML is not an element type XML.
 #
 # + qname - Namespace qualified name of the children to be removed
-public extern function xml.removeChildren(string qname);
+public extern function xml.removeChildren(string qname) returns ();

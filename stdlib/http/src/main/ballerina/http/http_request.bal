@@ -52,7 +52,7 @@ public type Request object {
     # Sets the provided `Entity` to the request.
     #
     # + e - The `Entity` to be set to the request
-    public extern function setEntity(mime:Entity e);
+    public extern function setEntity(mime:Entity e) returns ();
 
     # Gets the query parameters of the request, as a map.
     #
@@ -99,21 +99,21 @@ public type Request object {
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public function setHeader(string headerName, string headerValue);
+    public function setHeader(string headerName, string headerValue) returns ();
 
     # Adds the specified header to the request. Existing header values are not replaced.
     #
     # + headerName - The header name
     # + headerValue - The header value
-    public function addHeader(string headerName, string headerValue);
+    public function addHeader(string headerName, string headerValue) returns ();
 
     # Removes the specified header from the request.
     #
     # + key - The header name
-    public function removeHeader(string key);
+    public function removeHeader(string key) returns ();
 
     # Removes all the headers from the request.
-    public function removeAllHeaders();
+    public function removeAllHeaders() returns ();
 
     # Gets all the names of the headers of the request.
     #
@@ -128,7 +128,7 @@ public type Request object {
     # Sets the `content-type` header to the request.
     #
     # + contentType - Content type value to be set as the `content-type` header
-    public function setContentType(string contentType);
+    public function setContentType(string contentType) returns ();
 
     # Gets the type of the payload of the request (i.e: the `content-type` header value).
     #
@@ -184,58 +184,58 @@ public type Request object {
     # + payload - The `json` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `json`
-    public function setJsonPayload(json payload, string contentType = "application/json");
+    public function setJsonPayload(json payload, string contentType = "application/json") returns ();
 
     # Sets an `xml` as the payload.
     #
     # + payload - The `xml` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `xml`
-    public function setXmlPayload(xml payload, string contentType = "application/xml");
+    public function setXmlPayload(xml payload, string contentType = "application/xml") returns ();
 
     # Sets a `string` as the payload.
     #
     # + payload - The `string` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `string`
-    public function setTextPayload(string payload, string contentType = "text/plain");
+    public function setTextPayload(string payload, string contentType = "text/plain") returns ();
 
     # Sets a `byte[]` as the payload.
     #
     # + payload - The `byte[]` payload
     # + contentType - The content type of the payload. Set this to override the default `content-type` header value
     #                 for `byte[]`
-    public function setBinaryPayload(byte[] payload, string contentType = "application/octet-stream");
+    public function setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") returns ();
 
     # Set multiparts as the payload.
     #
     # + bodyParts - The entities which make up the message body
     # + contentType - The content type of the top level message. Set this to override the default
     #                 `content-type` header value
-    public function setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data");
+    public function setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") returns ();
 
     # Sets the content of the specified file as the entity body of the request.
     #
     # + filePath - Path to the file to be set as the payload
     # + contentType - The content type of the specified file. Set this to override the default `content-type`
     #                 header value
-    public function setFileAsPayload(string filePath, string contentType = "application/octet-stream");
+    public function setFileAsPayload(string filePath, string contentType = "application/octet-stream") returns ();
 
     # Sets a `ByteChannel` as the payload.
     #
     # + payload - A `ByteChannel` through which the message payload can be read
     # + contentType - The content type of the payload. Set this to override the default `content-type`
     #                 header value
-    public function setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream");
+    public function setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") returns ();
 
     # Sets the request payload.
     #
     # + payload - Payload can be of type `string`, `xml`, `json`, `byte[]`, `ByteChannel` or `Entity[]` (i.e: a set
     #             of body parts)
-    public function setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload);
+    public function setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) returns ();
 
     // For use within the module. Takes the Cache-Control header and parses it to a RequestCacheControl object.
-    function parseCacheControlHeader();
+    function parseCacheControlHeader() returns ();
 };
 
 /////////////////////////////////
@@ -257,22 +257,22 @@ function Request.getHeaders(string headerName) returns string[] {
     return entity.getHeaders(headerName);
 }
 
-function Request.setHeader(string headerName, string headerValue) {
+function Request.setHeader(string headerName, string headerValue) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setHeader(headerName, headerValue);
 }
 
-function Request.addHeader(string headerName, string headerValue) {
+function Request.addHeader(string headerName, string headerValue) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.addHeader(headerName, headerValue);
 }
 
-function Request.removeHeader(string key) {
+function Request.removeHeader(string key) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.removeHeader(key);
 }
 
-function Request.removeAllHeaders() {
+function Request.removeAllHeaders() returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.removeAllHeaders();
 }
@@ -286,7 +286,7 @@ function Request.expects100Continue() returns boolean {
     return self.hasHeader(EXPECT) ? self.getHeader(EXPECT) == "100-continue" : false;
 }
 
-function Request.setContentType(string contentType) {
+function Request.setContentType(string contentType) returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setContentType(contentType);
 }
@@ -350,49 +350,49 @@ function Request.getFormParams() returns map<string>|error {
     return parameters;
 }
 
-function Request.setJsonPayload(json payload, string contentType = "application/json") {
+function Request.setJsonPayload(json payload, string contentType = "application/json") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setJson(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setXmlPayload(xml payload, string contentType = "application/xml") {
+function Request.setXmlPayload(xml payload, string contentType = "application/xml") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setXml(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setTextPayload(string payload, string contentType = "text/plain") {
+function Request.setTextPayload(string payload, string contentType = "text/plain") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setText(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") {
+function Request.setBinaryPayload(byte[] payload, string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setByteArray(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") {
+function Request.setBodyParts(mime:Entity[] bodyParts, string contentType = "multipart/form-data") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setBodyParts(bodyParts, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setFileAsPayload(string filePath, @sensitive string contentType = "application/octet-stream") {
+function Request.setFileAsPayload(string filePath, @sensitive string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setFileAsEntityBody(filePath, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") {
+function Request.setByteChannel(io:ReadableByteChannel payload, string contentType = "application/octet-stream") returns () {
     mime:Entity entity = self.getEntityWithoutBody();
     entity.setByteChannel(payload, contentType = contentType);
     self.setEntity(entity);
 }
 
-function Request.setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) {
+function Request.setPayload(string|xml|json|byte[]|io:ReadableByteChannel|mime:Entity[] payload) returns () {
     if (payload is string) {
         self.setTextPayload(payload);
     } else if (payload is xml) {
