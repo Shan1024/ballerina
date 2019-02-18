@@ -2294,7 +2294,7 @@
         <equinox.osgi.services.version>3.4.0.v20140312-2051</equinox.osgi.services.version>
         <carbon.kernel.version>5.1.0</carbon.kernel.version>
         <transport.http.version>6.0.262</transport.http.version>
-        <carbon.messaging.version>2.3.7</carbon.messaging.version>
+        <carbon.messaging.version>3.0.3</carbon.messaging.version>
         <carbon.deployment.version>5.0.0</carbon.deployment.version>
         <carbon.config.version>2.1.2</carbon.config.version>
         <carbon.securevault.version>5.0.4</carbon.securevault.version>
