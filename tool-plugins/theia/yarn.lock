@@ -905,6 +905,33 @@
     webpack-cli "2.0.12"
     worker-loader "^1.1.1"
 
+"@theia/application-manager@0.4.0-next.711b5800":
+  version "0.4.0-next.711b5800"
+  resolved "https://registry.yarnpkg.com/@theia/application-manager/-/application-manager-0.4.0-next.711b5800.tgz#c79f49ac73f22b081201d284c0f6b39d734a1e88"
+  integrity sha512-/ugrVCpjuG8dfSupwf+zH/w51HmxUX57z1LP4v5JMIy/4Un4Uv+HNeLTpfZNAH3Ua+gvuxnRhaNmC9VwNeXD2g==
+  dependencies:
+    "@theia/application-package" "0.4.0-next.711b5800"
+    "@types/fs-extra" "^4.0.2"
+    bunyan "^1.8.10"
+    circular-dependency-plugin "^5.0.0"
+    copy-webpack-plugin "^4.5.0"
+    css-loader "^0.28.1"
+    electron "^2.0.14"
+    electron-rebuild "^1.5.11"
+    file-loader "^1.1.11"
+    font-awesome-webpack "0.0.5-beta.2"
+    fs-extra "^4.0.2"
+    ignore-loader "^0.1.2"
+    less "^2.7.2"
+    source-map-loader "^0.2.1"
+    source-map-support "^0.4.18"
+    style-loader "^0.23.1"
+    umd-compat-loader "^2.1.1"
+    url-loader "^1.1.2"
+    webpack "^4.0.0"
+    webpack-cli "2.0.12"
+    worker-loader "^1.1.1"
+
 "@theia/application-package@0.4.0-next.29b100c6":
   version "0.4.0-next.29b100c6"
   resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-0.4.0-next.29b100c6.tgz#ff3b9259cae771318a0485bcc591298686126ab2"
@@ -937,6 +964,22 @@
     semver "^5.4.1"
     write-json-file "^2.2.0"
 
+"@theia/application-package@0.4.0-next.711b5800":
+  version "0.4.0-next.711b5800"
+  resolved "https://registry.yarnpkg.com/@theia/application-package/-/application-package-0.4.0-next.711b5800.tgz#697dc5d67eb6b2d7eed20b3978cae1275a87ff7f"
+  integrity sha512-3q496QlZjmVk8ybPRb6xMvSv6FCIkBsq5bNAVfdIb4WM3ne+OxJedwbPEq8N4Kc/EUqNu3tKLmWDaVqPXzX9tw==
+  dependencies:
+    "@types/fs-extra" "^4.0.2"
+    "@types/request" "^2.0.3"
+    "@types/semver" "^5.4.0"
+    "@types/write-json-file" "^2.2.1"
+    changes-stream "^2.2.0"
+    fs-extra "^4.0.2"
+    is-electron "^2.1.0"
+    request "^2.82.0"
+    semver "^5.4.1"
+    write-json-file "^2.2.0"
+
 "@theia/callhierarchy@0.4.0-next.29b100c6", "@theia/callhierarchy@next":
   version "0.4.0-next.29b100c6"
   resolved "https://registry.yarnpkg.com/@theia/callhierarchy/-/callhierarchy-0.4.0-next.29b100c6.tgz#5570313cf9dcb3a69b6a96bb4ad5f8c4f685657c"
@@ -949,11 +992,11 @@
     ts-md5 "^1.2.2"
 
 "@theia/cli@next":
-  version "0.4.0-next.29b100c6"
-  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-0.4.0-next.29b100c6.tgz#016db0e3e489ae446cbe3e69d0f4321272ef5913"
-  integrity sha512-lfY7QzAmN3iFUY5+qhWw8Jzm4fDPwDdXcuaA81+cMvRx1g+4pzm8VwFVEJaze/mk08xbXfb+VbYMyB24+FFpZg==
+  version "0.4.0-next.711b5800"
+  resolved "https://registry.yarnpkg.com/@theia/cli/-/cli-0.4.0-next.711b5800.tgz#cd26cbb5fe3c959da7e974fb7c9b5a903ce283ba"
+  integrity sha512-6aLohgqmLce0AL/S2JJANiv8BA7ehcH0DlkiZ1mCSs3mZDQyBaqi7/CEzr+x0PivpA5tl8qjO9G0BU2HlThCxw==
   dependencies:
-    "@theia/application-manager" "0.4.0-next.29b100c6"
+    "@theia/application-manager" "0.4.0-next.711b5800"
 
 "@theia/console@0.4.0-next.29b100c6":
   version "0.4.0-next.29b100c6"
