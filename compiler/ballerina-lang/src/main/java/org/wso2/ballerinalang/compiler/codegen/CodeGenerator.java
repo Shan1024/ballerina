@@ -221,6 +221,7 @@ import org.wso2.ballerinalang.programfile.cpentries.ConstantPool;
 import org.wso2.ballerinalang.programfile.cpentries.FloatCPEntry;
 import org.wso2.ballerinalang.programfile.cpentries.FunctionRefCPEntry;
 import org.wso2.ballerinalang.programfile.cpentries.IntegerCPEntry;
+import org.wso2.ballerinalang.programfile.cpentries.MapCPEntry;
 import org.wso2.ballerinalang.programfile.cpentries.PackageRefCPEntry;
 import org.wso2.ballerinalang.programfile.cpentries.StringCPEntry;
 import org.wso2.ballerinalang.programfile.cpentries.StructureRefCPEntry;
@@ -928,16 +929,16 @@ public class CodeGenerator extends BLangNodeVisitor {
         channelLiteral.regIndex = calcAndGetExprRegIndex(channelLiteral);
     }
 
-    @Override
-    public void visit(BLangLocalVarRef localVarRef) {
-        if (localVarRef.regIndex != null && (localVarRef.regIndex.isLHSIndex || localVarRef.regIndex.isVarIndex)) {
-            emit(getOpcode(localVarRef.type.tag, InstructionCodes.IMOVE),
-                    localVarRef.varSymbol.varIndex, localVarRef.regIndex);
-            return;
-        }
-
-        localVarRef.regIndex = localVarRef.varSymbol.varIndex;
-    }
+//    @Override
+//    public void visit(BLangLocalVarRef localVarRef) {
+//        if (localVarRef.regIndex != null && (localVarRef.regIndex.isLHSIndex || localVarRef.regIndex.isVarIndex)) {
+//            emit(getOpcode(localVarRef.type.tag, InstructionCodes.IMOVE),
+//                    ((BVarSymbol) localVarRef.varSymbol).varIndex, localVarRef.regIndex);
+//            return;
+//        }
+//
+//        localVarRef.regIndex = ((BVarSymbol) localVarRef.varSymbol).varIndex;
+//    }
 
     @Override
     public void visit(BLangFieldVarRef fieldVarRef) {
@@ -2187,11 +2188,13 @@ public class CodeGenerator extends BLangNodeVisitor {
             constantInfo.constantValue = constantValue;
 
             // We currently have `key -> constant` details in the map. But we need the CP index of the `key` as well.
-            // We store that details in the `constantKeyToCPIndexMap` map.
             for (Entry<KeyInfo, ConstantValue> entry : constantValue.constantValueMap.entrySet()) {
                 KeyInfo keyInfo = entry.getKey();
                 keyInfo.cpIndex = addUTF8CPEntry(currentPkgInfo, keyInfo.name);
             }
+
+            constantValue.valueCPEntry = currentPkgInfo.addCPEntry(new MapCPEntry(constantValue.constantValueMap));
+
         }
 
         // Add documentation attributes.
@@ -2265,11 +2268,15 @@ public class CodeGenerator extends BLangNodeVisitor {
                 constantValueMap.put(new KeyInfo(key), constantValue);
 
                 // We currently have `key -> constant` details in the map. But we need the CP index of the `key` as
-                // well. We store that details in the `constantKeyToCPIndexMap` map.
+                // well.
                 for (Entry<KeyInfo, ConstantValue> entry : constantValue.constantValueMap.entrySet()) {
                     KeyInfo keyInfo = entry.getKey();
                     keyInfo.cpIndex = addUTF8CPEntry(currentPkgInfo, keyInfo.name);
                 }
+
+                constantValue.valueCPEntry = currentPkgInfo.addCPEntry(new MapCPEntry(constantValue.constantValueMap));
+            } else if (valueExpr.getKind() == NodeKind.CONSTANT_REF) {
+                int i = 10;
             } else {
                 throw new RuntimeException("unexpected node kind");
             }

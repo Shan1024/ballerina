@@ -664,8 +664,23 @@ public class CompiledPackageSymbolEnter {
             // Create the constant symbol.
             constantSymbol = new BConstantSymbol(flags, names.fromString(constantName), this.env.pkgSymbol.pkgID,
                     valueType, valueType, enclScope.owner);
-            constantSymbol.literalValue = readConstantValueMap(dataInStream, valueType);
-            constantSymbol.literalValueTypeTag = valueType.tag;
+
+
+            int size = dataInStream.readInt();
+
+
+            for (int i = 0; i < size; i++) {
+                int keyCPIndex = dataInStream.readInt();
+
+                int typeTag = dataInStream.readInt();
+                if (typeTag == 6) {
+                    boolean value = dataInStream.readBoolean();
+                } else {
+                    int valueCPIndex = dataInStream.readInt();
+                }
+
+            }
+
         }
 
         // Define constant.

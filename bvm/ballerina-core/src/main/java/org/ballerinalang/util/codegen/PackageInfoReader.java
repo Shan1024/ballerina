@@ -78,6 +78,7 @@ import org.ballerinalang.util.codegen.cpentries.ForkJoinCPEntry;
 import org.ballerinalang.util.codegen.cpentries.FunctionCallCPEntry;
 import org.ballerinalang.util.codegen.cpentries.FunctionRefCPEntry;
 import org.ballerinalang.util.codegen.cpentries.IntegerCPEntry;
+import org.ballerinalang.util.codegen.cpentries.MapCPEntry;
 import org.ballerinalang.util.codegen.cpentries.PackageRefCPEntry;
 import org.ballerinalang.util.codegen.cpentries.StringCPEntry;
 import org.ballerinalang.util.codegen.cpentries.StructureRefCPEntry;
@@ -274,6 +275,23 @@ public class PackageInfoReader {
                         .getCPEntry(uniqueNameCPIndex);
 
                 return new WorkerDataChannelRefCPEntry(uniqueNameCPIndex, wrkrDtChnlTypesSigCPEntry.getValue());
+            case CP_ENTRY_MAP:
+
+                int size = dataInStream.readInt();
+
+                for (int i = 0; i < size; i++) {
+                    int keyCPIndex = dataInStream.readInt();
+
+                    int typeTag = dataInStream.readInt();
+                    if (typeTag == 6) {
+                        boolean value = dataInStream.readBoolean();
+                    } else {
+                        int valueCPIndex = dataInStream.readInt();
+                    }
+
+                }
+
+                return new MapCPEntry(new LinkedHashMap<>());
             default:
                 throw new ProgramFileFormatException("invalid constant pool entry " + cpEntryType.getValue());
         }
@@ -605,8 +623,11 @@ public class PackageInfoReader {
         } else {
             // Read and ignore value cp index.
             dataInStream.readInt();
+
+            dataInStream.readInt();
+
             // Read and ignore map constant value.
-            readMapLiteral(packageInfo);
+//            readMapLiteral(packageInfo);
         }
 
         // Read and ignore attributes.

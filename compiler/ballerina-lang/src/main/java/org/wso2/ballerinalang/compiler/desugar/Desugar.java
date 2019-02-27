@@ -130,6 +130,7 @@ import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordVarRef.BLangR
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRestArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangServiceConstructorExpr;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangConstRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangFieldVarRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangFunctionVarRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangLocalVarRef;
@@ -2538,6 +2539,11 @@ public class Desugar extends BLangNodeVisitor {
     public void visit(BLangPackageVarRef packageVarRef) {
         result = packageVarRef;
     }
+
+//    @Override
+//    public void visit(BLangConstRef constRef) {
+//        result = constRef;
+//    }
 
     @Override
     public void visit(BLangFunctionVarRef functionVarRef) {
