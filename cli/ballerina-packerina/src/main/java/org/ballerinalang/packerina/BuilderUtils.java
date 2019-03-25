@@ -41,7 +41,7 @@ import static org.ballerinalang.compiler.CompilerOptionName.LOCK_ENABLED;
 import static org.ballerinalang.compiler.CompilerOptionName.OFFLINE;
 import static org.ballerinalang.compiler.CompilerOptionName.PROJECT_DIR;
 import static org.ballerinalang.compiler.CompilerOptionName.SKIP_TESTS;
-import static org.ballerinalang.compiler.CompilerOptionName.TEST_ENABLED;;
+import static org.ballerinalang.compiler.CompilerOptionName.TEST_ENABLED;
 
 /**
  * This class provides util methods for building Ballerina programs and packages.

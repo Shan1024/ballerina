@@ -31,6 +31,7 @@ import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef;
 import org.wso2.ballerinalang.util.AbstractTransportCompilerPlugin;
 
 import java.util.List;
+
 import javax.activation.MimeTypeParseException;
 
 import static org.ballerinalang.net.http.HttpConstants.ANN_CONFIG_ATTR_COMPRESSION;
