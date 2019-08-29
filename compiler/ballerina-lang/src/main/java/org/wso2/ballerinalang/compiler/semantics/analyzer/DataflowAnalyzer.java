@@ -323,10 +323,14 @@ public class DataflowAnalyzer extends BLangNodeVisitor {
 
     @Override
     public void visit(BLangSimpleVariableDef varDefNode) {
-        BLangVariable var = varDefNode.var;
+        BLangSimpleVariable var = varDefNode.var;
         if (var.expr == null) {
             addUninitializedVar(var);
             return;
+        }
+
+        if (var.symbol != null && !var.symbol.isUsed) {
+            dlog.warning(varDefNode.pos, DiagnosticCode.UNUSED_VARIABLE, var.name.value);
         }
 
         analyzeNode(var, env);
