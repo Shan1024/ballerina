@@ -1476,7 +1476,6 @@ function scheduleStartMethod(jvm:MethodVisitor mv, bir:Package pkg, string initC
 # + pkg - package
 function generateLambdaForMain(bir:Function userMainFunc, jvm:ClassWriter cw, bir:Package pkg,
                                string mainClass, string initClass) {
-    string pkgName = getPackageName(pkg.org.value, pkg.name.value);
     bir:BType returnType = <bir:BType> userMainFunc.typeValue?.retType;
     boolean isVoidFunc = returnType is bir:BTypeNil;
     

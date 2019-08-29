@@ -120,8 +120,6 @@ type TerminatorGenerator object {
     function genUnlockTerm(bir:Unlock unlockIns, string funcName, bir:BType? attachedType) {
         jvm:Label gotoLabel = self.labelGen.getLabel(funcName + unlockIns.unlockBB.id.value);
 
-        string currentPackageName = getPackageName(self.module.org.value, self.module.name.value);
-
         string lockClass = "L" + LOCK_VALUE + ";";
         // unlocked in the same order https://yarchive.net/comp/linux/lock_ordering.html
         foreach var globalVariable in unlockIns.globleVars {
@@ -362,7 +360,6 @@ type TerminatorGenerator object {
         // load strand
         self.mv.visitVarInsn(ALOAD, localVarOffset);
         string lookupKey = getPackageName(orgName, moduleName) + methodLookupName;
-        boolean isExternFunction = isBIRFunctionExtern(lookupKey);
         int argsCount = callIns.args.length();
         int i = 0;
         while (i < argsCount) {
@@ -497,7 +494,6 @@ type TerminatorGenerator object {
         }
         string funcName = callIns.name.value;
         string lambdaName = "$" + funcName + "$lambda$" + lambdaIndex.toString() + "$";
-        string currentPackageName = getPackageName(self.module.org.value, self.module.name.value);
 
         bir:BType? futureType = callIns.lhsOp?.typeValue;
         bir:BType returnType = bir:TYPE_NIL;

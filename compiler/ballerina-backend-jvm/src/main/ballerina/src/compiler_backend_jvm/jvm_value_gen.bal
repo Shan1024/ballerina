@@ -175,7 +175,6 @@ public type ObjectGenerator object {
             jvm:Label targetLabel = targetLabels[i];
             mv.visitLabel(targetLabel);
 
-            string methodName = getName(func);
             bir:BType?[] paramTypes = func.typeValue.paramTypes;
             bir:BType? retType = func.typeValue["retType"];
 

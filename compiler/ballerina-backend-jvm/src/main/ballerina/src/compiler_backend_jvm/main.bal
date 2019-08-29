@@ -83,7 +83,6 @@ function readMap(string path) returns map<string> {
         io:ReadableCharacterChannel rch = new(rbc, "UTF8");
 
         var result = <@untainted> rch.readJson();
-        var didClose = rch.close();
         if (result is error) {
             error e = <error>result;
             panic e;

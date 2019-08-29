@@ -188,7 +188,6 @@ function genJFieldForInteropField(JFieldFunctionWrapper jFieldFuncWrapper,
 
     // Load java method parameters
     birFuncParamIndex = jField.isStatic ? 0: 2;
-    int jMethodParamIndex = 0;
     if (birFuncParamIndex < birFuncParams.length()) {
         var birFuncParam = <bir:FunctionParam>birFuncParams[birFuncParamIndex];
         int paramLocalVarIndex = indexMap.getIndex(birFuncParam);

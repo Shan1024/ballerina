@@ -690,7 +690,6 @@ type InstructionGenerator object {
     function generateObjectLoadIns(bir:FieldAccess objectLoadIns) {
         // visit object_ref
         self.loadVar(objectLoadIns.rhsOp.variableDcl);
-        bir:BType varRefType = objectLoadIns.rhsOp.variableDcl.typeValue;
 
         // visit key_expr
         self.loadVar(objectLoadIns.keyOp.variableDcl);
@@ -708,7 +707,6 @@ type InstructionGenerator object {
     function generateObjectStoreIns(bir:FieldAccess objectStoreIns) {
         // visit object_ref
         self.loadVar(objectStoreIns.lhsOp.variableDcl);
-        bir:BType varRefType = objectStoreIns.lhsOp.variableDcl.typeValue;
 
         // visit key_expr
         self.loadVar(objectStoreIns.keyOp.variableDcl);
@@ -884,8 +882,6 @@ type InstructionGenerator object {
         self.mv.visitInsn(DUP);
 
         string lambdaName = inst.name.value + "$lambda$";
-        string lookupKey = getPackageName(inst.pkgID.org, inst.pkgID.name) + inst.name.value;
-        string methodClass = lookupFullQualifiedClassName(lookupKey);
 
         bir:BType returnType = inst.lhsOp.typeValue;
         boolean isVoid = false;
@@ -995,7 +991,6 @@ type InstructionGenerator object {
                 io:sprintf("(L%s;)L%s;", XML_QNAME, STRING_VALUE), false);
 
         // store in the target reg
-        bir:BType targetType = xmlAttrStoreIns.lhsOp.variableDcl.typeValue;
         self.storeToVar(xmlAttrStoreIns.lhsOp.variableDcl);
     }
 
@@ -1034,7 +1029,6 @@ type InstructionGenerator object {
         }
 
         // store in the target reg
-        bir:BType targetType = xmlLoadIns.lhsOp.variableDcl.typeValue;
         self.storeToVar(xmlLoadIns.lhsOp.variableDcl);
     }
 

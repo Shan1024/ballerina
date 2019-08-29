@@ -56,7 +56,6 @@ function genJMethodForBExternalFuncOldStyle(OldStyleExternalFunctionWrapper extF
     bir:Function birFunc = extFuncWrapper.func;
     string desc = getMethodDesc(birFunc.typeValue.paramTypes, birFunc.typeValue["retType"]);
     int access = ACC_PUBLIC;
-    string selfParamName = "$_self_$";
     int selfParamIndex = -1;
     if attachedType is () {
         access += ACC_STATIC;

@@ -96,10 +96,6 @@ function createJFieldValidationRequest(jvm:FieldAnnotTag annotTagRef,
 function buildParamTypeConstraints(bir:AnnotationValue? annotValue,
                                    bir:Function birFunc,
                                    jvm:MethodAnnotTag annotTagRef) returns jvm:JType?[]? {
-    // creating the constraints using the existing function parameter types first.
-    var birFuncParams = birFunc.params;
-    var birFuncParamCount = birFunc.params.length();
-
     if annotValue is bir:AnnotationArrayValue {
         bir:AnnotationValue?[] annotArrayElements =  annotValue.annotValueArray;
         jvm:JType?[] constraints = [];
