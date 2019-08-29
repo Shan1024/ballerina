@@ -164,7 +164,7 @@ public type AndOperatorProcessor object {
         if (pAlias == self.lhsAlias) {
             // promoted from lhs means, it can be a partial lhs state or a completed state.
             if (self.rhsPartialStates.hasKey(stateEvent.getEventId())) {
-                var rhsRemoved = self.rhsPartialStates.remove(stateEvent.getEventId());
+                _ = self.rhsPartialStates.remove(stateEvent.getEventId());
                 self.stateEvents.addLast(stateEvent);
             } else {
                 self.lhsPartialStates[stateEvent.getEventId()] = stateEvent;
@@ -172,7 +172,7 @@ public type AndOperatorProcessor object {
         } else {
             // promoted from rhs means, it can be a partial rhs state or a completed state.
             if (self.lhsPartialStates.hasKey(stateEvent.getEventId())) {
-                var rhsRemoved = self.lhsPartialStates.remove(stateEvent.getEventId());
+                _ = self.lhsPartialStates.remove(stateEvent.getEventId());
                 self.stateEvents.addLast(stateEvent);
             } else {
                 self.rhsPartialStates[stateEvent.getEventId()] = stateEvent;
@@ -218,10 +218,10 @@ public type AndOperatorProcessor object {
     public function remove(StreamEvent streamEvent) {
         // remove matching partial states from this processor.
         if (self.lhsPartialStates.hasKey(streamEvent.getEventId())) {
-            var removed = self.lhsPartialStates.remove(streamEvent.getEventId());
+            _ = self.lhsPartialStates.remove(streamEvent.getEventId());
         }
         if (self.rhsPartialStates.hasKey(streamEvent.getEventId())) {
-            var removed = self.rhsPartialStates.remove(streamEvent.getEventId());
+            _ = self.rhsPartialStates.remove(streamEvent.getEventId());
         }
         // remove matching fulfilled states from this processor.
         self.stateEvents.resetToFront();

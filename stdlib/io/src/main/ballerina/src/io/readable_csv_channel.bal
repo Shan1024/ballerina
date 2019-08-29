@@ -41,6 +41,7 @@ public type ReadableCSVChannel object {
         int count = MINIMUM_HEADER_COUNT;
         while (count < nHeaders) {
             var result = self.getNext();
+            result = ();
             count = count + 1;
         }
     }

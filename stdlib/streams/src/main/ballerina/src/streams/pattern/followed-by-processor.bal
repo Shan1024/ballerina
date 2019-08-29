@@ -143,7 +143,7 @@ public type FollowedByProcessor object {
             // promoted from rhs means, it's a complete state.
             // so, remove the its respective partial event.
             if (self.partialStates.hasKey(stateEvent.getEventId())) {
-                var removed = self.partialStates.remove(stateEvent.getEventId());
+                _ = self.partialStates.remove(stateEvent.getEventId());
                 self.stateEvents.addLast(stateEvent);
             }
         }
@@ -169,7 +169,7 @@ public type FollowedByProcessor object {
     public function remove(StreamEvent streamEvent) {
         // remove matching partial states from this processor.
         if (self.partialStates.hasKey(streamEvent.getEventId())) {
-            var removed = self.partialStates.remove(streamEvent.getEventId());
+            _ = self.partialStates.remove(streamEvent.getEventId());
         }
         // remove matching fulfilled states from this processor.
         self.stateEvents.resetToFront();

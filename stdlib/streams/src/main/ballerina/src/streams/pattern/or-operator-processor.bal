@@ -145,7 +145,7 @@ public type OrOperatorProcessor object {
         // therefore have to check both sides before evict
         if (pAlias == self.lhsAlias) {
             if(self.rhsEvicted.hasKey(stateEvent.getEventId())) {
-                var proceedVal = self.rhsEvicted.remove(stateEvent.getEventId());
+                _ = self.rhsEvicted.remove(stateEvent.getEventId());
                 proceed = true;
             }
             if (!proceed) {
@@ -153,7 +153,7 @@ public type OrOperatorProcessor object {
             }
         } else {
             if (self.lhsEvicted.hasKey(stateEvent.getEventId())) {
-                var tempVar = self.lhsEvicted.remove(stateEvent.getEventId());
+                _ = self.lhsEvicted.remove(stateEvent.getEventId());
                 proceed = true;
             }
             if (!proceed) {
@@ -183,10 +183,10 @@ public type OrOperatorProcessor object {
     # + streamEvent - event to be removed
     public function remove(StreamEvent streamEvent) {
         if (self.rhsEvicted.hasKey(streamEvent.getEventId())) {
-            var removed = self.rhsEvicted.remove(streamEvent.getEventId());
+            _ = self.rhsEvicted.remove(streamEvent.getEventId());
         }
         if (self.lhsEvicted.hasKey(streamEvent.getEventId())) {
-            var removed = self.lhsEvicted.remove(streamEvent.getEventId());
+            _ = self.lhsEvicted.remove(streamEvent.getEventId());
         }
         // remove matching fulfilled states from this processor.
         self.stateEvents.resetToFront();

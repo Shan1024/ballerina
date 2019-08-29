@@ -317,7 +317,7 @@ function performFailoverAction (string path, Request request, HttpOperation requ
     } else {
         // When performing passthrough scenarios using Failover connector, message needs to be built before trying
         // out the failover endpoints to keep the request message to failover the messages.
-        var binaryPayload = failoverRequest.getBinaryPayload();
+        _ = check failoverRequest.getBinaryPayload();
         requestEntity = check failoverRequest.getEntity();
     }
     while (startIndex != currentIndex) {

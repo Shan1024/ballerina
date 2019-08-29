@@ -363,7 +363,6 @@ public type PackageParser object {
     }
 
     function parseTypeDefBodies(TypeDef?[] typeDefs) {
-        int numTypeDefs = typeDefs.length();
         foreach var typeDef in typeDefs {
             TypeDef tDef = getTypeDef(typeDef);
             BType typeValue = tDef.typeValue;
@@ -390,7 +389,7 @@ public type PackageParser object {
         DiagnosticPos pos = parseDiagnosticPos(self.reader);
         string name = self.reader.readStringCpRef();
         int flags = self.reader.readInt32();
-        int isLabel = self.reader.readInt8();
+        _ = self.reader.readInt8();
 
         skipMarkDownDocAttachement(self.reader); 
 
@@ -428,7 +427,7 @@ public type PackageParser object {
 
     function parseAnnotAttachments() returns AnnotationAttachment?[] {
         AnnotationAttachment?[] annotAttachments = [];
-        int annotNoBytes_ignored = self.reader.readInt64();
+        _ = self.reader.readInt64();
         int noOfAnnotAttachments = self.reader.readInt32();
         if (noOfAnnotAttachments == 0) {
             return annotAttachments;

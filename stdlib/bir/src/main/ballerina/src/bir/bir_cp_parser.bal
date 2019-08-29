@@ -47,7 +47,7 @@ public type ConstPoolParser object {
             var unparsedBytes = self.unparsedTypes[i];
             if (unparsedBytes is byte[]){
                 TypeParser p  = new (self.cp, self.unparsedTypes, i);
-                var ignoreAlreadyInCp = p.parseTypeAndAddToCp();
+                _ = p.parseTypeAndAddToCp();
             }
             i = i + 1;
         }

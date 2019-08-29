@@ -111,6 +111,6 @@ public type Scheduler object {
 # `schedulerService` triggers the timer event generation at the given timestamp.
 service schedulerService = service {
     resource function onTrigger(Scheduler scheduler) {
-        var e = scheduler.sendTimerEvents();
+        _ = scheduler.sendTimerEvents();
     }
 };

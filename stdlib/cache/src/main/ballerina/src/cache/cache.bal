@@ -153,7 +153,7 @@ public type Cache object {
         // Iterate through the map and remove entries.
         foreach var c in cacheKeys {
             // These cache values are ignred. So it is not needed to check the return value for the remove function.
-            var tempVar = self.entries.remove(c);
+            _ = self.entries.remove(c);
         }
     }
 
@@ -194,7 +194,7 @@ public type Cache object {
     public function remove(string key) {
         // Cache might already be removed by the cache clearing task. So no need to check the return value.
         if (self.entries.hasKey(key)) {
-            var tempVar = self.entries.remove(key);
+            _ = self.entries.remove(key);
         }
     }
 
@@ -283,7 +283,7 @@ function runCacheExpiry() {
             while(currentKeyIndex < cachesToBeRemovedIndex) {
                 string key = cachesToBeRemoved[currentKeyIndex];
                 // Remove the cache entry.
-                var tempVar = currentCache.entries.remove(key);
+                _ = currentCache.entries.remove(key);
                 currentKeyIndex += 1;
             }
 
@@ -299,7 +299,7 @@ function runCacheExpiry() {
     // We iterate though all empty cache keys and remove them from the `cacheMap`.
     foreach var emptyCacheKey in emptyCacheKeys {
         if (cacheMap.hasKey(emptyCacheKey)) {
-            var tempVar = cacheMap.remove(emptyCacheKey);
+            _ = cacheMap.remove(emptyCacheKey);
         }
     }
     return ();
