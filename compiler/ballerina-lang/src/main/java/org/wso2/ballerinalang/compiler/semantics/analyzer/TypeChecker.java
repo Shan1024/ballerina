@@ -1161,10 +1161,15 @@ public class TypeChecker extends BLangNodeVisitor {
             BSymbol symbol = symResolver.lookupSymbolInPackage(varRefExpr.pos, env,
                     names.fromIdNode(varRefExpr.pkgAlias), varName, SymTag.VARIABLE_NAME);
 
-            if ((symbol.tag & SymTag.VARIABLE_NAME) == SymTag.VARIABLE_NAME) {
-                BVarSymbol bVarSymbol = (BVarSymbol) symbol;
-                bVarSymbol.isUsed = true;
-            }
+//            if ((symbol.tag & SymTag.VARIABLE_NAME) == SymTag.VARIABLE_NAME) {
+//                BVarSymbol varSymbol = (BVarSymbol) symbol;
+//
+//            }
+
+//            if ((symbol.tag & SymTag.INVOKABLE) == SymTag.INVOKABLE) {
+//                BInvokableSymbol invokableSymbol = (BInvokableSymbol) symbol;
+//                invokableSymbol.isUsed = true;
+//            }
 
             // if no symbol, check same for object attached function
             if (symbol == symTable.notFoundSymbol && env.enclType != null) {
@@ -1178,6 +1183,7 @@ public class TypeChecker extends BLangNodeVisitor {
                 checkSefReferences(varRefExpr.pos, env, varSym);
                 varRefExpr.symbol = varSym;
                 actualType = varSym.type;
+                varSym.isUsed = true;
                 markAndRegisterClosureVariable(symbol, varRefExpr.pos);
             } else if ((symbol.tag & SymTag.TYPE) == SymTag.TYPE) {
                 actualType = new BTypedescType(symbol.type, null);
@@ -2753,6 +2759,7 @@ public class TypeChecker extends BLangNodeVisitor {
         }
         if (isFunctionPointer(funcSymbol)) {
             iExpr.functionPointerInvocation = true;
+            ((BInvokableSymbol) funcSymbol).isUsed = true;
             markAndRegisterClosureVariable(funcSymbol, iExpr.pos);
         }
         if (Symbols.isFlagOn(funcSymbol.flags, Flags.REMOTE)) {

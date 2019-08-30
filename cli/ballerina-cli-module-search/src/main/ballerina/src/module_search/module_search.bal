@@ -119,7 +119,7 @@ function search (http:Client definedEndpoint, string url, string querySearched, 
                         if (descColWidth >= minDescColWidth) {
                             printInCLI(summary, descColWidth - authorsColWidth);
                             string authors = "";
-                            json authorsArr = checkpanic jsonElement.authors;
+                            //json authorsArr = checkpanic jsonElement.authors;
                             //foreach var authorIndex in 0 ..< authorsArr.length() {
                             //    if (authorIndex == authorsArr.length() - 1) {
                             //        authors = authors ;//+ authorsArr[authorIndex].toString(); todo fixme

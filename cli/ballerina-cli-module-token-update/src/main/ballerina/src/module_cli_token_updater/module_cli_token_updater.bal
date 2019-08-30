@@ -50,6 +50,10 @@ service update_token on new http:Listener(9295) {
         response.setHeader("Content-Type", "image/svg+xml");
         var destinationChannel = openForWriting(system:getUserHome() + "/.ballerina/Settings.toml", "UTF-8");
         var result = destinationChannel.write("[central]\naccesstoken= \"" + token  + "\"", 0);
+        // Todo - Figure out the multiple error logs
+        if (result is error) {
+            // Todo
+        }
         io:println("Token updated");
         checkpanic caller->respond(response);
     }

@@ -167,7 +167,6 @@ function pullPackage(http:Client httpEndpoint, string url, string modulePath, st
             boolean valid = internal:matches(moduleVersion, VERSION_REGEX);
 
             if (valid) {
-                string moduleName = modulePath.substring(internal:lastIndexOf(modulePath, "/") + 1, modulePath.length());
                 string baloFile = uriParts[uriParts.length() - 1];
 
                 // adding version to the module path

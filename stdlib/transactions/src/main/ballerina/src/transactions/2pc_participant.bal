@@ -92,10 +92,6 @@ type RemoteParticipant object {
     function prepareMe(string protocolUrl) returns PrepareResult|error {
         Participant2pcClientEP participantEP  = getParticipant2pcClient(protocolUrl);
 
-        // Let's set this to true and change it to false only if a participant aborted or an error occurred while trying
-        // to prepare a participant
-        boolean successful = true;
-
         log:printInfo("Preparing remote participant: " + self.participantId);
         // If a participant voted NO or failed then abort
         var result = participantEP->prepare(self.transactionId);

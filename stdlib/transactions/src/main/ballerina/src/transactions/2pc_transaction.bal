@@ -160,7 +160,6 @@ type TwoPhaseCommitTransaction object {
         PrepareDecision prepareDecision = PREPARE_DECISION_COMMIT;
         future<[(PrepareResult|error)?, Participant]>?[] results = [];
         foreach var participant in self.participants {
-            string participantId = participant.participantId;
             future<[(PrepareResult|error)?, Participant]> f = start participant.prepare(protocol);
             results[results.length()] = f;
         }
